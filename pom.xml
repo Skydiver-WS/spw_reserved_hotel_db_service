@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.project.reserved_system_db_app_service</groupId>
-	<artifactId>reserved_system_db_app_service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>db_app_service</artifactId>
+	<version>1.0.0</version>
 	<name>reserved_system_db_app_service</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
