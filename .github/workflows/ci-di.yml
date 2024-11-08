@@ -34,8 +34,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t skydiver_ws/db_service:latest .
+          docker build -t skydiverkhv/db_service:latest .
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push skydiver_ws/db_service:latest
+          docker push skydiverkhv/db_service:latest
