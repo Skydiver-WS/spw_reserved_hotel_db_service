@@ -39,3 +39,8 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           docker push skydiverkhv/db_service:latest
+
+      - name: Pull and start Docker container the local
+        run: |
+          docker push skydiverkhv/db_service:latest
+          docker run -d -p 8080:8080 skydiverkhv/db_service:latest
