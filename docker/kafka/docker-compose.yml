@@ -29,6 +29,7 @@ services:
 
 
   app:
+    container_name: db_service
     image: skydiverkhv/db_service:latest
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
