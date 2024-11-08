@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   kafka:
     bootstrap-servers: 127.0.0.1:9093 # Укажите адрес вашего сервера Kafka

@@ -15,6 +15,7 @@ services:
       - zookeeper
     ports:
       - "9092:9092"
+      - "9093:9093"
     networks:
       - app-network
     environment:
