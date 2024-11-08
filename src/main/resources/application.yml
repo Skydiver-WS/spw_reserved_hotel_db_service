@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: 127.0.1.2:9092 # Укажите адрес вашего сервера Kafka
+    bootstrap-servers: 127.0.0.1:9093 # Укажите адрес вашего сервера Kafka
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
