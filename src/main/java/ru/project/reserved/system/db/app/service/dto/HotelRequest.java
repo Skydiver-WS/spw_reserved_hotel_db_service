@@ -1,8 +1,6 @@
 package ru.project.reserved.system.db.app.service.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.project.reserved.system.db.app.service.entity.City;
 
 import java.util.List;
@@ -10,6 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelRequest {
 
     private Long id;
