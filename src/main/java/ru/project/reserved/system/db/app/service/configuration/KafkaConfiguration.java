@@ -83,9 +83,6 @@ public class KafkaConfiguration {
         return kafkaProperties.getTopicList();
     }
 
-
-
-
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
