@@ -37,6 +37,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
   datasource:
     url: jdbc:postgresql://172.30.38.105:5432/hotel_db
     username: postgres

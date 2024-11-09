@@ -15,9 +15,6 @@ public class KafkaProperties {
     @Value("${spring.kafka.producer.topic.kafkaMessageGroupId}")
     private String messageGroupId;
 
-    @Value("${spring.kafka.producer.topic.default-topic}")
-    private String topic;
-
     private String[] topicList;
 
     private String[] typeKey;

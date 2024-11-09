@@ -8,6 +8,7 @@ public class ReservedSystemDbAppServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ReservedSystemDbAppServiceApplication.class, args);
+		System.out.println("################################################## SERVER START ###################################################");
 	}
 
 }
