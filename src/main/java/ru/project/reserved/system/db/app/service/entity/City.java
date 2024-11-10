@@ -3,6 +3,8 @@ package ru.project.reserved.system.db.app.service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Builder
 @Getter
@@ -17,5 +19,8 @@ public class City {
     private String name;
 
     private String address;
+
+    @ManyToMany(mappedBy = "cityList")
+    private Set<Hotel> hotels;
 
 }

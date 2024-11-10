@@ -8,6 +8,16 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       topic:
         topicList:
+          - hotel-response
+          - room-response
+
+    consumer:
+      group-id: data-base # Группа потребителей
+      auto-offset-reset: earliest # Начинать с самого раннего смещения, если смещение не найдено
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      topic:
+        topicList:
           - create-update-hotel
           - find-all-hotel
           - find-by-parameter-hotel
@@ -26,11 +36,6 @@ spring:
           - update-room
           - delete-room
           - read-room
-    consumer:
-      group-id: data-base # Группа потребителей
-      auto-offset-reset: earliest # Начинать с самого раннего смещения, если смещение не найдено
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
   jpa:
     generate-ddl: true

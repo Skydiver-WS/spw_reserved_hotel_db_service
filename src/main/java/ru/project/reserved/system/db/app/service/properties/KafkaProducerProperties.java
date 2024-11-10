@@ -8,14 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @ConfigurationProperties(prefix = "spring.kafka.producer.topic")
-public class KafkaProperties {
+public class KafkaProducerProperties {
     @Value("${spring.kafka.bootstrap-servers}")
     private String url;
 
-    @Value("${spring.kafka.producer.topic.kafkaMessageGroupId}")
-    private String messageGroupId;
-
     private String[] topicList;
 
-    private String[] typeKey;
 }

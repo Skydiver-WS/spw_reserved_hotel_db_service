@@ -1,5 +1,6 @@
 package ru.project.reserved.system.db.app.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 import ru.project.reserved.system.db.app.service.entity.City;
 

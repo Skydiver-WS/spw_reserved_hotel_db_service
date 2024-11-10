@@ -7,7 +7,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import ru.project.reserved.system.db.app.service.properties.KafkaProperties;
+import ru.project.reserved.system.db.app.service.properties.KafkaConsumerProperties;
 import ru.project.reserved.system.db.app.service.service.kafka.KafkaService;
 
 import java.util.Arrays;
@@ -18,15 +18,15 @@ import java.util.Arrays;
 public class Listener {
 
     private final KafkaService kafkaService;
-    private final KafkaProperties kafkaProperties;
+    private final KafkaConsumerProperties kafkaConsumerProperties;
 
 
-    @KafkaListener(groupId = "${spring.kafka.producer.topic.kafkaMessageGroupId}",
-            topics = "#{@kafkaTopics}",
+    @KafkaListener(groupId = "${spring.kafka.consumer.topic.kafkaMessageGroupId}",
+            topics = "#{@kafkaConsumerTopics}",
             containerFactory = "kafkaListenerContainerFactory")
     public void kafkaListener(String message,
                               @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key) {
-        if (Arrays.asList(kafkaProperties.getTypeKey()).contains(key)) {
+        if (Arrays.asList(kafkaConsumerProperties.getTypeKey()).contains(key)) {
             log.info("Get key {}, message: {}", key, message);
             kafkaService.getMessageGroupDataBase(key, message);
         }

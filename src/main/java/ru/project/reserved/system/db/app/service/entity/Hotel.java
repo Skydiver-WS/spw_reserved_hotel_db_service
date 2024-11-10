@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -27,14 +28,19 @@ public class Hotel {
 
     private Double rating;
 
-    @Column(nullable = false, columnDefinition = "integer default 0")
+    @Column(columnDefinition = "integer default 0")
     private Integer freeApart;
 
-    @Column(nullable = false, columnDefinition = "integer default 0")
+    @Column(columnDefinition = "integer default 0")
     private Integer countApart;
 
-    @OneToMany
-    private List<City> cityList;
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "hotel_id")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "hotel_city",
+    joinColumns = @JoinColumn(name = "hotel_id"),
+    inverseJoinColumns = @JoinColumn(name = "city_id"))
+    private Set<City> cityList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hotel")
     private List<Room> roomList;

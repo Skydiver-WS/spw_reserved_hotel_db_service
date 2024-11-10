@@ -41,17 +41,17 @@ public class HotelServiceImpl implements HotelService {
             return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
                     .findHotelsByName(hotelRequest.getName()));
         }
-        if(!hotelRequest.getCityList().isEmpty()){
+        if (!hotelRequest.getCityList().isEmpty()) {
             log.info("Get all hotels by params cityList: {}", hotelRequest.getCityList());
             return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
                     .findHotelsByCityList(hotelRequest.getCityList()));
         }
-        if(Objects.nonNull(hotelRequest.getRating())){
+        if (Objects.nonNull(hotelRequest.getRating())) {
             log.info("Get all hotels by params rating: {}", hotelRequest.getRating());
             return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
                     .findHotelsByRating(hotelRequest.getRating()));
         }
-        if (Objects.nonNull(hotelRequest.getDistance())){
+        if (Objects.nonNull(hotelRequest.getDistance())) {
             log.info("Get all hotels by params distance: {}", hotelRequest.getDistance());
             List<Hotel> hotels = hotelRepository.findHotelsByDistance(hotelRequest.getDistance())
                     .stream()
@@ -67,9 +67,18 @@ public class HotelServiceImpl implements HotelService {
     @Override
     @SneakyThrows
     public HotelResponse createHotel(HotelRequest hotelRequest) {
-        log.info("Create hotel");
-        Hotel newHotel = hotelRepository.save(hotelMapper.mappingHotelRequestToHotel(hotelRequest));
-        return hotelMapper.mappingHotelToHotelRequest(newHotel);
+        Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
+        log.info("Create hotel {}", hotel.getName());
+        try {
+            Hotel newHotel = hotelRepository.save(hotel);
+            return hotelMapper.mappingHotelToHotelRequest(newHotel);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            return HotelResponse.builder()
+                    .name(hotelRequest.getName())
+                    .errorMessage(ex.getMessage())
+                    .build();
+        }
     }
 
     @Override
@@ -80,8 +89,17 @@ public class HotelServiceImpl implements HotelService {
             return null;
         }
         hotelMapper.updateHotelByHotelRequest(hotel.get(), hotelRequest);
-        Hotel updatedHotel = hotelRepository.save(hotel.get());
-        return hotelMapper.mappingHotelToHotelRequest(updatedHotel);
+        try {
+            Hotel updatedHotel = hotelRepository.save(hotel.get());
+            return hotelMapper.mappingHotelToHotelRequest(updatedHotel);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            return HotelResponse.builder()
+                    .name(hotelRequest.getName())
+                    .errorMessage(ex.getMessage())
+                    .build();
+        }
+
     }
 
     @Override
