@@ -27,62 +27,64 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     @SneakyThrows
-    public void getMessageGroupDataBase(String key, String message) {
+    public void getMessageGroupDataBase(String topic, String key, String message) {
+        log.info("Topic: {}\n" +
+                " Key: {}", topic, key);
 
-        if(key.equals(KeyType.CREATE_HOTEL.getKey())){
+        if(topic.equals(TopicType.CREATE_HOTEL.getTopic())){
             HotelRequest hotel = objectMapper.readValue(message, HotelRequest.class);
             HotelResponse hotelResponse = hotelService.createHotel(hotel);
-            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), objectMapper.writeValueAsString(hotelResponse));
+            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(hotelResponse));
             return;
         }
-        if(key.equals(KeyType.UPDATE_HOTEL.getKey())){
+        if(topic.equals(TopicType.UPDATE_HOTEL.getTopic())){
             HotelRequest hotel = objectMapper.readValue(message, HotelRequest.class);
             HotelResponse hotelResponse = hotelService.updateHotel(hotel);
-            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), objectMapper.writeValueAsString(hotelResponse));
+            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(hotelResponse));
             return;
         }
-        if(key.equals(KeyType.REMOVE_HOTEL.getKey())){
+        if(topic.equals(TopicType.REMOVE_HOTEL.getTopic())){
             HotelRequest hotel = objectMapper.readValue(message, HotelRequest.class);
             hotelService.deleteHotel(hotel);
-            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), "Removed Hotel");
+            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, "Removed Hotel");
             return;
         }
-        if(key.equals(KeyType.READ_HOTEL.getKey())){
+        if(topic.equals(TopicType.FIND_BY_PARAMETER_HOTEL.getTopic())){
             HotelRequest hotel = objectMapper.readValue(message, HotelRequest.class);
             List<HotelResponse> response = hotelService.getAllHotelsByParam(hotel);
-            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), objectMapper.writeValueAsString(response));
+            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(response));
             return;
         }
 
 
-        if(key.equals(KeyType.CREATE_ROOM.getKey())){
+        if(topic.equals(TopicType.CREATE_ROOM.getTopic())){
             RoomRequest roomRequest = objectMapper.readValue(message, RoomRequest.class);
             RoomResponse roomResponse = roomService.createRoom(roomRequest);
-            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), objectMapper.writeValueAsString(roomResponse));
+            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(roomResponse));
             return;
         }
-        if(key.equals(KeyType.UPDATE_ROOM.getKey())){
+        if(topic.equals(TopicType.UPDATE_ROOM.getTopic())){
             RoomRequest roomRequest = objectMapper.readValue(message, RoomRequest.class);
             RoomResponse roomResponse = roomService.updateRoom(roomRequest);
-            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), objectMapper.writeValueAsString(roomResponse));
+            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(roomResponse));
             return;
         }
-        if(key.equals(KeyType.REMOVE_ROOM.getKey())){
+        if(topic.equals(TopicType.REMOVE_ROOM.getTopic())){
             RoomRequest roomRequest = objectMapper.readValue(message, RoomRequest.class);
             roomService.removeRoom(roomRequest.getId());
-            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), "Removed Room");
+            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, "Removed Room");
             return;
         }
-        if(key.equals(KeyType.READ_ROOM.getKey())){
+        if(topic.equals(TopicType.FIND_BY_PARAMETER_ROOM.getTopic())){
             RoomRequest roomRequest = objectMapper.readValue(message, RoomRequest.class);
             List<RoomResponse> response = roomService.findRoomsForParameters(roomRequest);
-            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), objectMapper.writeValueAsString(response));
+            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(response));
         }
     }
 
 
-    private void sendResponse(String topic, String response){
-        kafkaTemplate.send(topic, response);
+    private void sendResponse(String topic, String key, String response){
+        kafkaTemplate.send(topic, key, response);
     }
 
 }
