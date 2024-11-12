@@ -25,10 +25,11 @@ public class Listener {
             topics = "#{@kafkaConsumerTopics}",
             containerFactory = "kafkaListenerContainerFactory")
     public void kafkaListener(String message,
+                              @Header(value = KafkaHeaders.RECEIVED_TOPIC, required = false) String topic,
                               @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key) {
-        if (Arrays.asList(kafkaConsumerProperties.getTypeKey()).contains(key)) {
-            log.info("Get key {}, message: {}", key, message);
-            kafkaService.getMessageGroupDataBase(key, message);
+        if (Arrays.asList(kafkaConsumerProperties.getTopicList()).contains(topic)) {
+            log.info("Get topic {}, key: {}", topic, key);
+            kafkaService.getMessageGroupDataBase(topic, key, message);
         }
     }
 }
