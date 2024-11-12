@@ -49,6 +49,12 @@ public class KafkaServiceImpl implements KafkaService {
             sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, "Removed Hotel");
             return;
         }
+        if (topic.equals(TopicType.FIND_ALL_HOTEL.getTopic())){
+            log.info(message);
+            List<HotelResponse> list = hotelService.getAllHotels();
+            sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(list));
+            return;
+        }
         if(topic.equals(TopicType.FIND_BY_PARAMETER_HOTEL.getTopic())){
             HotelRequest hotel = objectMapper.readValue(message, HotelRequest.class);
             List<HotelResponse> response = hotelService.getAllHotelsByParam(hotel);
