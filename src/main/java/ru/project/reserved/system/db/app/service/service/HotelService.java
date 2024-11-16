@@ -10,6 +10,6 @@ public interface HotelService {
     List<HotelResponse> getAllHotelsByParam(HotelRequest hotelRequest);
     HotelResponse createHotel(HotelRequest hotelRequest);
     HotelResponse updateHotel(HotelRequest hotelRequest);
-    void deleteHotel(HotelRequest hotelRequest);
+    HotelResponse deleteHotel(HotelRequest hotelRequest);
 
 }

@@ -29,7 +29,14 @@ public class HotelServiceImpl implements HotelService {
     @SneakyThrows
     public List<HotelResponse> getAllHotels() {
         log.info("Get all hotels");
+        try {
         return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository.findAll());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return List.of(HotelResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .build());
+        }
     }
 
     @Override
@@ -86,7 +93,10 @@ public class HotelServiceImpl implements HotelService {
         log.info("Update hotel");
         Optional<Hotel> hotel = hotelRepository.findById(hotelRequest.getId());
         if (hotel.isEmpty()) {
-            return null;
+            return HotelResponse.builder()
+                    .id(hotelRequest.getId())
+                    .errorMessage("Hotel with id" +  hotelRequest.getId() + "not found")
+                    .build();
         }
         hotelMapper.updateHotelByHotelRequest(hotel.get(), hotelRequest);
         try {
@@ -103,9 +113,20 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public void deleteHotel(HotelRequest hotelRequest) {
+    public HotelResponse deleteHotel(HotelRequest hotelRequest) {
         log.info("Delete hotel");
+        Optional<Hotel> hotel = hotelRepository.findById(hotelRequest.getId());
+        if (hotel.isEmpty()) {
+            log.info("Hotel with id {} not found", hotelRequest.getId());
+            return HotelResponse.builder()
+                    .id(hotelRequest.getId())
+                    .errorMessage("Hotel with id " + hotelRequest.getId() + " not found")
+                    .build();
+        }
         hotelRepository.deleteById(hotelRequest.getId());
-
+        return HotelResponse.builder()
+                .id(hotelRequest.getId())
+                .message("Hotel with id " + hotelRequest.getId() + " delete")
+                .build();
     }
 }

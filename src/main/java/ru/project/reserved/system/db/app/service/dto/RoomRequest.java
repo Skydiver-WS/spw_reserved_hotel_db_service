@@ -20,7 +20,7 @@ public class RoomRequest {
 
     private Status status;
 
-    private ClassRoom classRoom;
+    private ClassRoomType classRoomType;
 
     private List<Photo> photoList;
 }

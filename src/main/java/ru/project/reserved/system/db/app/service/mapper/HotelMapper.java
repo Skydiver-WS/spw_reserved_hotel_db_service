@@ -8,7 +8,7 @@ import ru.project.reserved.system.db.app.service.entity.Hotel;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {RoomMapper.class})
+@Mapper(componentModel = "spring", uses = {RoomMapper.class, CityMapper.class})
 public interface HotelMapper {
 
     Hotel mappingHotelRequestToHotel(HotelRequest hotelRequest);

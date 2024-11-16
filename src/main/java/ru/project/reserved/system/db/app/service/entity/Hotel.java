@@ -34,15 +34,19 @@ public class Hotel {
     @Column(columnDefinition = "integer default 0")
     private Integer countApart;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "hotel_id")
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH})
     @JoinTable(name = "hotel_city",
     joinColumns = @JoinColumn(name = "hotel_id"),
     inverseJoinColumns = @JoinColumn(name = "city_id"))
     private Set<City> cityList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hotel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hotel",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true)
     private List<Room> roomList;
 
 }

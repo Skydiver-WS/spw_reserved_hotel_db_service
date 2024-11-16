@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.project.reserved.system.db.app.service.entity.City;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class HotelResponse {
+    private Long id;
     private String name;
     private String description;
     private String address;
@@ -21,5 +21,7 @@ public class HotelResponse {
     private Integer freeApart;
     private Integer countApart;
     private String errorMessage;
-    private List<City> cityList;
+    private String message;
+    private List<CityResponse> cityList;
+    private List<RoomResponse> roomList;
 }

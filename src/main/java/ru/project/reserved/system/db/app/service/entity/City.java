@@ -20,7 +20,8 @@ public class City {
 
     private String address;
 
-    @ManyToMany(mappedBy = "cityList")
+    @ManyToMany(fetch = FetchType.EAGER,
+            mappedBy = "cityList")
     private Set<Hotel> hotels;
 
 }

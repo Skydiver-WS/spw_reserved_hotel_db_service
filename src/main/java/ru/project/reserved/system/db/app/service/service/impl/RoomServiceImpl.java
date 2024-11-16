@@ -38,8 +38,8 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomResponse> findRoomsForParameters(RoomRequest room) {
         log.info("Find rooms for parameters");
-        if(Objects.nonNull(room.getClassRoom())){
-            return roomMapper.roomsToRoomResponses(roomRepository.findRoomsByClassRoom(room.getClassRoom()));
+        if(Objects.nonNull(room.getClassRoomType())){
+            return roomMapper.roomsToRoomResponses(roomRepository.findRoomsByClassRoomType(room.getClassRoomType()));
         }
         if (Objects.nonNull(room.getStatus())){
             return roomMapper.roomsToRoomResponses(roomRepository.findRoomsByStatus(room.getStatus()));

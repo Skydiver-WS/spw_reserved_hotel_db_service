@@ -2,7 +2,7 @@ package ru.project.reserved.system.db.app.service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.project.reserved.system.db.app.service.dto.ClassRoom;
+import ru.project.reserved.system.db.app.service.dto.ClassRoomType;
 import ru.project.reserved.system.db.app.service.dto.Status;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class Room {
     private Status status = Status.FREE;
 
     @Enumerated(EnumType.STRING)
-    private ClassRoom classRoom;
+    private ClassRoomType classRoomType;
 
     @ManyToOne
     private Hotel hotel;
