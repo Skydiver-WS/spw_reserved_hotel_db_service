@@ -7,12 +7,16 @@ import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     List<Hotel> findHotelsByName(String hotelName);
-    List<Hotel> findHotelsByCityList(List<City> cityList);
+    List<Hotel> findHotelsByCityList(Set<City> cityList);
+    List<Hotel> findHotelsByRatingGreaterThanEqual(Double rating);
+    List<Hotel> findHotelsByRatingLessThanEqual(Double rating);
+    List<Hotel> findHotelsByRatingBetween(Double minRating, Double maxRating);
     List<Hotel> findHotelsByRating(Double rating);
     List<Hotel> findHotelsByDistance(Double distance);
     Hotel findHotelByNameAndCityList(String hotelName, List<City> cityList);

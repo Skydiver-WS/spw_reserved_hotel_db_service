@@ -1,6 +1,5 @@
 package ru.project.reserved.system.db.app.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 import ru.project.reserved.system.db.app.service.entity.City;
 
@@ -20,4 +19,5 @@ public class HotelRequest {
     private Double distance;
     private Double rating;
     private List<City> cityList;
+    private Parameters parameters;
 }

@@ -7,15 +7,15 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import ru.project.reserved.system.db.app.service.dto.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.SortType;
+import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,12 +51,13 @@ public class HotelServiceImpl implements HotelService {
         if (!hotelRequest.getCityList().isEmpty()) {
             log.info("Get all hotels by params cityList: {}", hotelRequest.getCityList());
             return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
-                    .findHotelsByCityList(hotelRequest.getCityList()));
+                    .findHotelsByCityList(new HashSet<>(hotelRequest.getCityList())));
         }
         if (Objects.nonNull(hotelRequest.getRating())) {
             log.info("Get all hotels by params rating: {}", hotelRequest.getRating());
-            return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
-                    .findHotelsByRating(hotelRequest.getRating()));
+            List<Hotel> hotels = hotelRepository.findAll();
+            hotels = sortedByRating(hotels, hotelRequest);
+            return hotelMapper.mappingHotelListToHotelResponseList(hotels);
         }
         if (Objects.nonNull(hotelRequest.getDistance())) {
             log.info("Get all hotels by params distance: {}", hotelRequest.getDistance());
@@ -128,5 +129,19 @@ public class HotelServiceImpl implements HotelService {
                 .id(hotelRequest.getId())
                 .message("Hotel with id " + hotelRequest.getId() + " delete")
                 .build();
+    }
+
+    private List<Hotel> sortedByRating(List<Hotel> hotels, HotelRequest hotelRequest) {
+        return hotels.stream()
+                .filter(r -> {
+                    if (hotelRequest.getParameters().getSortType().equals(SortType.DESC)){
+                        return r.getRating() <= hotelRequest.getRating();
+                    } else if (hotelRequest.getParameters().getSortType().equals(SortType.ASC)){
+                        return r.getRating() >= hotelRequest.getRating();
+                    }
+                    return Objects.equals(r.getRating(), hotelRequest.getRating());
+                }).sorted(hotelRequest.getParameters().getSortType().equals(SortType.DESC)
+                        ? Comparator.comparing(Hotel::getRating).reversed()
+                        : Comparator.comparing(Hotel::getRating)).toList();
     }
 }
