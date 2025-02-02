@@ -3,6 +3,7 @@ package ru.project.reserved.system.db.app.service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,14 +12,13 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
-    private String address;
 
     @ManyToMany(fetch = FetchType.EAGER,
             mappedBy = "cityList")

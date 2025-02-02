@@ -17,7 +17,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       topic:
-        topicList:
+        topicList :
           - create-hotel
           - update-hotel
           - find-all-hotel
@@ -28,6 +28,7 @@ spring:
           - find-all-room
           - find-by-parameter-room
           - remove-room
+          - reserved-room
         kafkaMessageGroupId: "data-base"
         typeKey:
           - create-hotel

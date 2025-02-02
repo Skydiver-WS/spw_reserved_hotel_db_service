@@ -7,7 +7,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import ru.project.reserved.system.db.app.service.dto.*;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
+import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.type.TopicType;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 import ru.project.reserved.system.db.app.service.service.kafka.KafkaService;
@@ -56,8 +60,8 @@ public class KafkaServiceImpl implements KafkaService {
             return;
         }
         if(topic.equals(TopicType.FIND_BY_PARAMETER_HOTEL.getTopic())){
-            HotelRequest hotel = objectMapper.readValue(message, HotelRequest.class);
-            List<HotelResponse> response = hotelService.getAllHotelsByParam(hotel);
+            HotelRequest request = objectMapper.readValue(message, HotelRequest.class);
+            List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
             sendResponse(TopicType.HOTEL_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(response));
             return;
         }

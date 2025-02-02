@@ -1,9 +1,11 @@
-package ru.project.reserved.system.db.app.service.dto;
+package ru.project.reserved.system.db.app.service.dto.room;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
+import ru.project.reserved.system.db.app.service.dto.type.StatusType;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class RoomResponse {
 
     private String description;
 
-    private Status status;
+    private StatusType statusType;
 
     private ClassRoomType classRoomType;
 

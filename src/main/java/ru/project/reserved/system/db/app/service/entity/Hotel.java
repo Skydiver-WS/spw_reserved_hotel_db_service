@@ -49,4 +49,7 @@ public class Hotel {
             orphanRemoval = true)
     private List<Room> roomList;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Address> addressList;
+
 }

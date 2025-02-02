@@ -3,15 +3,15 @@ package ru.project.reserved.system.db.app.service.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.project.reserved.system.db.app.service.dto.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
+import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
+import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,6 +20,7 @@ import java.util.Optional;
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
+    private final RoomSearchService searchService;
 
 
     @Override
@@ -36,17 +37,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomResponse> findRoomsForParameters(RoomRequest room) {
+    public List<RoomResponse> findRoomsForParameters(RoomRequest request) {
         log.info("Find rooms for parameters");
-        if(Objects.nonNull(room.getClassRoomType())){
-            return roomMapper.roomsToRoomResponses(roomRepository.findRoomsByClassRoomType(room.getClassRoomType()));
-        }
-        if (Objects.nonNull(room.getStatus())){
-            return roomMapper.roomsToRoomResponses(roomRepository.findRoomsByStatus(room.getStatus()));
-        }
-        return List.of(RoomResponse.builder()
-                .errorMessage("Room not found")
-                .build());
+        List<RoomResponse> roomResponses = searchService.searchRoomByParameter(request);
+        return roomResponses.isEmpty() ? List.of(RoomResponse.builder()
+                .errorMessage("Rooms not found")
+                .build()) : roomResponses;
     }
 
     @Override

@@ -2,8 +2,8 @@ package ru.project.reserved.system.db.app.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import ru.project.reserved.system.db.app.service.dto.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
+import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.entity.Room;
 
 import java.util.List;

@@ -3,19 +3,17 @@ package ru.project.reserved.system.db.app.service.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import ru.project.reserved.system.db.app.service.dto.HotelRequest;
-import ru.project.reserved.system.db.app.service.dto.HotelResponse;
-import ru.project.reserved.system.db.app.service.dto.SortType;
-import ru.project.reserved.system.db.app.service.entity.City;
+import ru.project.reserved.system.db.app.service.aop.SearchEntity;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
+import ru.project.reserved.system.db.app.service.service.HotelSearchService;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,13 +22,14 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final HotelSearchService hotelSearchService;
 
     @Override
     @SneakyThrows
     public List<HotelResponse> getAllHotels() {
         log.info("Get all hotels");
         try {
-        return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository.findAll());
+            return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository.findAll());
         } catch (Exception e) {
             log.error(e.getMessage());
             return List.of(HotelResponse.builder()
@@ -40,40 +39,14 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    @SneakyThrows
-    public List<HotelResponse> getAllHotelsByParam(HotelRequest hotelRequest) {
-        log.info("Get all hotels by params");
-        if (Strings.isNotBlank(hotelRequest.getName())) {
-            log.info("Get all hotels by params name: {}", hotelRequest.getName());
-            return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
-                    .findHotelsByName(hotelRequest.getName()));
-        }
-        if (!hotelRequest.getCityList().isEmpty()) {
-            log.info("Get all hotels by params cityList: {}", hotelRequest.getCityList());
-            return hotelMapper.mappingHotelListToHotelResponseList(hotelRepository
-                    .findHotelsByCityList(new HashSet<>(hotelRequest.getCityList())));
-        }
-        if (Objects.nonNull(hotelRequest.getRating())) {
-            log.info("Get all hotels by params rating: {}", hotelRequest.getRating());
-            List<Hotel> hotels = hotelRepository.findAll();
-            hotels = sortedByRating(hotels, hotelRequest);
-            return hotelMapper.mappingHotelListToHotelResponseList(hotels);
-        }
-        if (Objects.nonNull(hotelRequest.getDistance())) {
-            log.info("Get all hotels by params distance: {}", hotelRequest.getDistance());
-            List<Hotel> hotels = hotelRepository.findHotelsByDistance(hotelRequest.getDistance())
-                    .stream()
-                    .sorted(Comparator.comparing(Hotel::getDistance))
-                    .toList();
-            return hotelMapper.mappingHotelListToHotelResponseList(hotels);
-        }
-        return List.of(HotelResponse.builder()
-                .errorMessage("Hotels not found!")
-                .build());
+    public List<HotelResponse> getAllHotelsByParams(HotelRequest request) {
+        log.info("Get hotels by params");
+        return hotelSearchService.searchHotels(request);
     }
 
     @Override
     @SneakyThrows
+    @SearchEntity
     public HotelResponse createHotel(HotelRequest hotelRequest) {
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
         log.info("Create hotel {}", hotel.getName());
@@ -96,7 +69,7 @@ public class HotelServiceImpl implements HotelService {
         if (hotel.isEmpty()) {
             return HotelResponse.builder()
                     .id(hotelRequest.getId())
-                    .errorMessage("Hotel with id" +  hotelRequest.getId() + "not found")
+                    .errorMessage("Hotel with id" + hotelRequest.getId() + "not found")
                     .build();
         }
         hotelMapper.updateHotelByHotelRequest(hotel.get(), hotelRequest);
@@ -129,19 +102,5 @@ public class HotelServiceImpl implements HotelService {
                 .id(hotelRequest.getId())
                 .message("Hotel with id " + hotelRequest.getId() + " delete")
                 .build();
-    }
-
-    private List<Hotel> sortedByRating(List<Hotel> hotels, HotelRequest hotelRequest) {
-        return hotels.stream()
-                .filter(r -> {
-                    if (hotelRequest.getParameters().getSortType().equals(SortType.DESC)){
-                        return r.getRating() <= hotelRequest.getRating();
-                    } else if (hotelRequest.getParameters().getSortType().equals(SortType.ASC)){
-                        return r.getRating() >= hotelRequest.getRating();
-                    }
-                    return Objects.equals(r.getRating(), hotelRequest.getRating());
-                }).sorted(hotelRequest.getParameters().getSortType().equals(SortType.DESC)
-                        ? Comparator.comparing(Hotel::getRating).reversed()
-                        : Comparator.comparing(Hotel::getRating)).toList();
     }
 }

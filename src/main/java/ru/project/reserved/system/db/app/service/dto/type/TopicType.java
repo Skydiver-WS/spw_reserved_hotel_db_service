@@ -1,4 +1,4 @@
-package ru.project.reserved.system.db.app.service.dto;
+package ru.project.reserved.system.db.app.service.dto.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,8 @@ public enum TopicType {
     FIND_BY_PARAMETER_ROOM("find-by-parameter-room"),
     REMOVE_ROOM("remove-room"),
     HOTEL_RESPONSE("hotel-response"),
-    ROOM_RESPONSE("room-response");
+    ROOM_RESPONSE("room-response"),
+    RESERVED_ROOM("reserved-room"),;
 
     private final String topic;
 }
