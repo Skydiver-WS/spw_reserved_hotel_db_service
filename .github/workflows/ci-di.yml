@@ -34,11 +34,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t skydiverkhv/db_service:v1.0.5 .
+          docker build -t skydiverkhv/db_service:v1.0.6 .
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push skydiverkhv/db_service:v1.0.5
+          docker push skydiverkhv/db_service:v1.0.6
 
 #      - name: Pull and start Docker container the local
 #        run: |
