@@ -27,13 +27,24 @@ public class RoomSearchServiceImpl implements RoomSearchService {
 
     @Override
     public List<RoomResponse> searchRoomByParameter(RoomRequest roomRequest) {
+        List<Room> rooms = findAndFilterRooms(roomRequest);
+        return roomMapper.roomsToRoomResponses(rooms);
+    }
+
+    @Override
+    public List<Room> searchRoomByParameterForReserved(RoomRequest roomRequest) {
+        return findAndFilterRooms(roomRequest);
+    }
+
+    private List<Room> findAndFilterRooms(RoomRequest roomRequest) {
         Hotel hotel = hotelRepository.findById(roomRequest.getRoomSearch().getHotelId()).orElse(null);
         List<Room> rooms = roomRepository.findRoomsByHotel(hotel);
+        filterByDateReserved(rooms, roomRequest);
         filterByClassRoom(rooms, roomRequest);
         filterByClassRoom(rooms, roomRequest);
         filterByCoast(rooms, roomRequest);
         filterByClassRoom(rooms, roomRequest);
-        return roomMapper.roomsToRoomResponses(rooms);
+        return rooms;
     }
 
     private void filterByDateReserved(List<Room> rooms, RoomRequest roomRequest) {

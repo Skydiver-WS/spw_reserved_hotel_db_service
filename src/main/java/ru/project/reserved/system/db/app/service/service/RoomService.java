@@ -11,4 +11,6 @@ public interface RoomService {
     List<RoomResponse> findRoomsForParameters(RoomRequest request);
     RoomResponse updateRoom(RoomRequest room);
     void removeRoom(Integer id);
+
+    RoomResponse reservedRoom(RoomRequest roomRequest);
 }

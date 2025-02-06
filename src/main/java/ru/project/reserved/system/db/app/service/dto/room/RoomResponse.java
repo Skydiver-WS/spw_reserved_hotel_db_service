@@ -9,11 +9,14 @@ import ru.project.reserved.system.db.app.service.dto.type.StatusType;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.List;
+
 @Builder
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomResponse {
+    private Long id;
+
     private Long numberApart;
 
     private String description;

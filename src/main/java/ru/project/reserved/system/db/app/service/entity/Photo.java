@@ -15,7 +15,4 @@ public class Photo {
     @Column(columnDefinition = "TEXT")
     private String photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Room room;
-
 }

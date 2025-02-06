@@ -17,6 +17,7 @@ import java.util.List;
 public class Room {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long numberApart;
@@ -31,7 +32,7 @@ public class Room {
 
     private Date endReserved;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Photo> photoList;
 
     @Enumerated(EnumType.STRING)

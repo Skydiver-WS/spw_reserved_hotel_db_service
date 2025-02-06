@@ -21,7 +21,7 @@ public class RoomRequest {
 
     private Integer id;
 
-    private Long numberApart;
+    private Long countApart;
 
     private String description;
 

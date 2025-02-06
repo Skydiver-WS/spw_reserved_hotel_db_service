@@ -10,6 +10,17 @@ spring:
         topicList:
           - hotel-response
           - room-response
+          - create-hotel
+          - update-hotel
+          - find-all-hotel
+          - find-by-parameter-hotel
+          - remove-hotel
+          - create-room
+          - update-room
+          - find-all-room
+          - find-by-parameter-room
+          - remove-room
+          - reserved-room
 
     consumer:
       group-id: data-base # Группа потребителей

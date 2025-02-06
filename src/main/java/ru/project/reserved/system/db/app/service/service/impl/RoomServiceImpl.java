@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.type.StatusType;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
@@ -13,6 +14,7 @@ import ru.project.reserved.system.db.app.service.service.RoomService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomResponse createRoom(RoomRequest room) {
         log.info("Create room");
-        Room  newRoom = roomRepository.save(roomMapper.roomResponseToRoom(room));
+        Room newRoom = roomRepository.save(roomMapper.roomResponseToRoom(room));
         return roomMapper.roomToRoomResponse(newRoom);
     }
 
@@ -48,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomResponse updateRoom(RoomRequest roomRequest) {
         Optional<Room> findRoom = roomRepository.findById(roomRequest.getId());
-        if(findRoom.isPresent()) {
+        if (findRoom.isPresent()) {
             log.info("Update room");
             roomMapper.updateRoom(findRoom.get(), roomRequest);
             Room newRoom = roomRepository.save(findRoom.get());
@@ -63,5 +65,25 @@ public class RoomServiceImpl implements RoomService {
     public void removeRoom(Integer id) {
         log.info("Remove room");
         roomRepository.deleteById(id);
+    }
+
+    @Override
+    public RoomResponse reservedRoom(RoomRequest roomRequest) {
+        List<Room> roomResponses = searchService.searchRoomByParameterForReserved(roomRequest);
+        try {
+            Random random = new Random();
+            Room room = roomResponses.size() == 1 ? roomResponses.getFirst()
+                    : roomResponses.get(random.nextInt(roomResponses.size()));
+            room.setStartReserved(roomRequest.getRoomSearch().getStartReserved());
+            room.setEndReserved(roomRequest.getRoomSearch().getEndReserved());
+            room.setStatus(StatusType.RESERVED);
+            return roomMapper.roomToRoomResponse(room);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return RoomResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .classRoomType(roomRequest.getClassRoomType())
+                    .build();
+        }
     }
 }
