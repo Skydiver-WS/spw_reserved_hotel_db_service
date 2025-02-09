@@ -12,7 +12,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

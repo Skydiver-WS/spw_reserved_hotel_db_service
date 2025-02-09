@@ -1,5 +1,6 @@
 package ru.project.reserved.system.db.app.service.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +8,10 @@ import org.springframework.stereotype.Service;
 import ru.project.reserved.system.db.app.service.aop.SearchEntity;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
+import ru.project.reserved.system.db.app.service.repository.CityRepository;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.service.HotelSearchService;
 import ru.project.reserved.system.db.app.service.service.HotelService;
@@ -21,6 +24,7 @@ import java.util.*;
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
+    private final CityRepository cityRepository;
     private final HotelMapper hotelMapper;
     private final HotelSearchService hotelSearchService;
 
@@ -47,14 +51,18 @@ public class HotelServiceImpl implements HotelService {
     @Override
     @SneakyThrows
     @SearchEntity
+    @Transactional
     public HotelResponse createHotel(HotelRequest hotelRequest) {
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
         log.info("Create hotel {}", hotel.getName());
         try {
+            Optional<City> city = cityRepository.findCityByName(hotelRequest.getCity().getName());
+            city.ifPresent(value -> hotel.setCityList(Set.of(value)));
             Hotel newHotel = hotelRepository.save(hotel);
             return hotelMapper.mappingHotelToHotelRequest(newHotel);
         } catch (Exception ex) {
             log.error(ex.getMessage());
+            ex.printStackTrace();
             return HotelResponse.builder()
                     .name(hotelRequest.getName())
                     .errorMessage(ex.getMessage())

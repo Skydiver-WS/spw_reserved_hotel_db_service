@@ -6,17 +6,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
+import ru.project.reserved.system.db.app.service.mapper.CityMapper;
+import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 
+import java.sql.SQLException;
 import java.util.Optional;
+import java.util.Set;
 
 @Aspect
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class SearchCity {
     private final HotelRepository hotelRepository;
+    private final CityMapper cityMapper;
 
 
     @Around(value = "@annotation(ru.project.reserved.system.db.app.service.aop.SearchEntity)")
@@ -25,13 +33,14 @@ public class SearchCity {
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             if (arg instanceof HotelRequest hotelRequest) {
-                Optional<Hotel> hotelOptional = hotelRepository.findHotelByName(hotelRequest.getName())
-                        .filter(h ->
-                                h.getCityList().stream()
-                                        .filter(c -> c.getName().equals(hotelRequest.getCity().getName()))
-                                        .isParallel()
-                        );
-                return hotelOptional.isPresent() ? hotelOptional.orElseThrow() : joinPoint.proceed();
+                boolean findHotel = hotelRepository.existsByNameAndCityList_Name(hotelRequest.getName(), hotelRequest.getCity().getName());
+                if (findHotel) {
+                    return HotelResponse.builder()
+                            .name(hotelRequest.getName())
+                            .errorMessage("Hotel " + hotelRequest.getName() + " already exists in city "
+                                    + hotelRequest.getCity().getName())
+                            .build();
+                }
             }
         }
         return joinPoint.proceed();

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.dto.city.CityResponse;
+import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class HotelResponse {
     private String rating;
     private Integer freeApart;
     private Integer countApart;
+    private List<Photo> photos;
     private String errorMessage;
     private String message;
 }

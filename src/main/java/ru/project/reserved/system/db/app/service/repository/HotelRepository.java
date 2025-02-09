@@ -21,5 +21,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<Hotel> findHotelsByRatingBetween(Double minRating, Double maxRating);
     List<Hotel> findHotelsByRating(Double rating);
     List<Hotel> findHotelsByDistance(Double distance);
+    boolean existsByNameAndCityList_Name(String name, String cityName);
 
 }

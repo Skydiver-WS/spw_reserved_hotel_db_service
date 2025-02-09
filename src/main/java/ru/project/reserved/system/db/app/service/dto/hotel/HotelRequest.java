@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import ru.project.reserved.system.db.app.service.dto.city.CityRequest;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
+import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +22,7 @@ public class HotelRequest {
     private String address;
     private Double distance;
     private Double rating;
+    private List<Photo> photos;
     private CityRequest city;
     private HotelSearchRequest hotelSearch;
 

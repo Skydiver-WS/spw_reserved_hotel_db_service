@@ -12,7 +12,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,17 +21,14 @@ public class Hotel {
 
     private String description;
 
-    private String photo;
-
     private Double distance;
 
     private Double rating;
 
-    @Column(columnDefinition = "integer default 0")
-    private Integer freeApart;
-
-    @Column(columnDefinition = "integer default 0")
-    private Integer countApart;
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private Integer freeApart = 0;
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private Integer countApart = 0;
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.DETACH,
@@ -51,5 +47,8 @@ public class Hotel {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Address> addressList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Photo> photos;
 
 }
