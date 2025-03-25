@@ -13,7 +13,6 @@ import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.dto.type.TopicType;
-import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 import ru.project.reserved.system.db.app.service.service.kafka.KafkaService;
