@@ -3,7 +3,6 @@ package ru.project.reserved.system.db.app.service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
-import ru.project.reserved.system.db.app.service.dto.type.StatusType;
 
 import java.util.Date;
 import java.util.List;
@@ -26,22 +25,18 @@ public class Room {
 
     private String description;
 
-    private StatusType status = StatusType.FREE;
-
-    private Date startReserved;
-
-    private Date endReserved;
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Photo> photoList;
-
-    @Enumerated(EnumType.STRING)
-    private StatusType statusType = StatusType.FREE;
 
     @Enumerated(EnumType.STRING)
     private ClassRoomType classRoomType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Hotel hotel;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "room")
+    private List<Booking> bookings;
+
+
 
 }

@@ -79,7 +79,10 @@ public class KafkaServiceImpl implements KafkaService {
 
     @SneakyThrows
     private void operationInRooms(String topic, String key, String message) {
-        RoomRequest roomRequest = objectMapper.readValue(message, RoomRequest.class);
+        RoomRequest roomRequest = new RoomRequest();
+        if (Strings.isNotBlank(message)){
+        roomRequest = objectMapper.readValue(message, RoomRequest.class);
+        }
         if (topic.equals(TopicType.CREATE_ROOM.getTopic())) {
             RoomResponse roomResponse = roomService.createRoom(roomRequest);
             sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(roomResponse));
@@ -91,8 +94,13 @@ public class KafkaServiceImpl implements KafkaService {
             return;
         }
         if (topic.equals(TopicType.REMOVE_ROOM.getTopic())) {
-            roomService.removeRoom(roomRequest.getId());
-            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, "Removed Room");
+            RoomResponse roomResponse = roomService.removeRoom(roomRequest.getHotelId(), roomRequest.getId());
+            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(roomResponse));
+            return;
+        }
+        if (topic.equals(TopicType.FIND_ALL_ROOM.getTopic())) {
+            List<RoomResponse> responses = roomService.findAllRooms();
+            sendResponse(TopicType.ROOM_RESPONSE.getTopic(), key, objectMapper.writeValueAsString(responses));
             return;
         }
         if (topic.equals(TopicType.FIND_BY_PARAMETER_ROOM.getTopic())) {

@@ -73,16 +73,17 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelResponse updateHotel(HotelRequest hotelRequest) {
         log.info("Update hotel");
-        Optional<Hotel> hotel = hotelRepository.findById(hotelRequest.getId());
-        if (hotel.isEmpty()) {
+        Optional<Hotel> hotelOptional = hotelRepository.findById(hotelRequest.getId());
+        if (hotelOptional.isEmpty()) {
             return HotelResponse.builder()
                     .id(hotelRequest.getId())
                     .errorMessage("Hotel with id" + hotelRequest.getId() + "not found")
                     .build();
         }
-        hotelMapper.updateHotelByHotelRequest(hotel.get(), hotelRequest);
+        Hotel hotel = hotelOptional.get();
+        hotelMapper.updateHotelByHotelRequest(hotel, hotelRequest);
         try {
-            Hotel updatedHotel = hotelRepository.save(hotel.get());
+            Hotel updatedHotel = hotelRepository.save(hotel);
             return hotelMapper.mappingHotelToHotelRequest(updatedHotel);
         } catch (Exception ex) {
             log.error(ex.getMessage());

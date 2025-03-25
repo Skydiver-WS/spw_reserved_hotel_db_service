@@ -34,9 +34,9 @@ public class HotelRequest {
         @NotNull
         private String city;
         private String hotelName;
-        @NotNull
+        //@NotNull
         private Date startReserved;
-        @NotNull
+        //@NotNull
         private Date endReserved;
         private SortType sortCoast;
         private Long coastMin;

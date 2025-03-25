@@ -1,41 +1,65 @@
 package ru.project.reserved.system.db.app.service.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
 import ru.project.reserved.system.db.app.service.dto.type.StatusType;
+import ru.project.reserved.system.db.app.service.entity.Booking;
+import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
+import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
+import ru.project.reserved.system.db.app.service.service.BookingService;
 import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
+    private final HotelRepository hotelRepository;
     private final RoomMapper roomMapper;
     private final RoomSearchService searchService;
+    private final BookingService bookingService;
 
 
     @Override
+    @Transactional
     public List<RoomResponse> findAllRooms() {
         log.info("Find all rooms");
         return roomMapper.roomsToRoomResponses(roomRepository.findAll());
     }
 
     @Override
-    public RoomResponse createRoom(RoomRequest room) {
+    public RoomResponse createRoom(RoomRequest roomRequest) {
         log.info("Create room");
-        Room newRoom = roomRepository.save(roomMapper.roomResponseToRoom(room));
-        return roomMapper.roomToRoomResponse(newRoom);
+        Hotel hotel = hotelRepository.findById(roomRequest.getHotelId()).
+                orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRequest.getHotelId() + " not found"));
+        Room newRoom = roomMapper.roomResponseToRoom(roomRequest);
+        hotel.getRoomList().forEach(room -> {
+            Long numCreate = newRoom.getNumberApart();
+            if (Objects.equals(room.getNumberApart(), numCreate)) {
+                Long num = hotel.getRoomList().stream()
+                        .map(Room::getNumberApart) // Извлекаем номера комнат
+                        .max(Comparator.naturalOrder()) // Ищем максимальный
+                        .orElse(0L);
+                newRoom.setNumberApart(num + 1);
+            }
+        });
+        hotel.setCountApart(hotel.getCountApart() + 1);
+        newRoom.setHotel(hotel);
+        Room room = roomRepository.save(newRoom);
+        hotelRepository.save(hotel);
+        return roomMapper.roomToRoomResponse(room);
     }
 
     @Override
@@ -62,22 +86,30 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void removeRoom(Integer id) {
-        log.info("Remove room");
-        roomRepository.deleteById(id);
+    public RoomResponse removeRoom(Long hotelId, Long roomId) {
+        if (roomRepository.existsRoomByHotelIdAndId(hotelId, roomId)) {
+            roomRepository.deleteByHotelIdAndRoomId(hotelId, roomId);
+            log.info("Remove room");
+            return RoomResponse.builder()
+                    .id(roomId)
+                    .description("Room delete")
+                    .build();
+        }
+        return RoomResponse.builder()
+                .errorMessage("Room " + roomId + " not found")
+                .build();
     }
 
     @Override
     public RoomResponse reservedRoom(RoomRequest roomRequest) {
-        List<Room> roomResponses = searchService.searchRoomByParameterForReserved(roomRequest);
         try {
-            Random random = new Random();
-            Room room = roomResponses.size() == 1 ? roomResponses.getFirst()
-                    : roomResponses.get(random.nextInt(roomResponses.size()));
-            room.setStartReserved(roomRequest.getRoomSearch().getStartReserved());
-            room.setEndReserved(roomRequest.getRoomSearch().getEndReserved());
-            room.setStatus(StatusType.RESERVED);
-            return roomMapper.roomToRoomResponse(room);
+            if (BookingOperationType.UPDATE.equals(roomRequest.getRoomBooking().getOperationType())) {
+                return bookingService.updateBookingRoom(roomRequest);
+            }
+            if (BookingOperationType.DELETE.equals(roomRequest.getRoomBooking().getOperationType())) {
+                return bookingService.deleteBookingRoom(roomRequest);
+            }
+            return bookingService.createBookingRoom(roomRequest);
         } catch (Exception e) {
             log.error(e.getMessage());
             return RoomResponse.builder()

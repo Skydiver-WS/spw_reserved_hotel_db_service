@@ -1,8 +1,10 @@
 package ru.project.reserved.system.db.app.service.dto.room;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sun.jdi.ClassType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
 import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
 import ru.project.reserved.system.db.app.service.dto.type.StatusType;
@@ -11,17 +13,21 @@ import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomRequest {
 
-    private Integer id;
+    private Long id;
 
-    private Long countApart;
+    private Long hotelId;
+
+    private Long numberApart;
 
     private String description;
 
@@ -29,9 +35,13 @@ public class RoomRequest {
 
     private ClassRoomType classRoomType;
 
+    private Double coast;
+
     private List<Photo> photoList;
 
     private RoomSearchRequest roomSearch;
+
+    private RoomBooking roomBooking;
 
     @Data
     @AllArgsConstructor
@@ -48,6 +58,21 @@ public class RoomRequest {
         private Date endReserved;
         private SortType sortCoast;
         private Double coast;
-        private ClassType classType;
+        private ClassRoomType classRoomType;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class RoomBooking {
+        private Long hotelId;
+        private Date startReserved;
+        private Date endReserved;
+        private ClassRoomType classType;
+        private UUID bookingId;
+        @NotNull
+        private BookingOperationType operationType;
+
     }
 }

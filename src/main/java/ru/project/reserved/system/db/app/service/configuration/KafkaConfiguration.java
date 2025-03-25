@@ -84,9 +84,4 @@ public class KafkaConfiguration {
         log.info("Creating kafka topics");
         return kafkaConsumerProperties.getTopicList();
     }
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
 }

@@ -15,12 +15,13 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     List<Hotel> findHotelsByName(String hotelName);
     Optional<Hotel> findHotelByName(String hotelName);
-    List<Hotel> findHotelsByCityList(Set<City> cityList);
+    List<Hotel> findHotelsByCityList_Name(String cityName);
     List<Hotel> findHotelsByRatingGreaterThanEqual(Double rating);
     List<Hotel> findHotelsByRatingLessThanEqual(Double rating);
     List<Hotel> findHotelsByRatingBetween(Double minRating, Double maxRating);
     List<Hotel> findHotelsByRating(Double rating);
     List<Hotel> findHotelsByDistance(Double distance);
     boolean existsByNameAndCityList_Name(String name, String cityName);
+    boolean existsByIdAndRoomList_Id(Long hotelId, Long roomId);
 
 }

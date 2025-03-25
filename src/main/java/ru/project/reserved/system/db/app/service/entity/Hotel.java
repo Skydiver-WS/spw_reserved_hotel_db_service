@@ -21,12 +21,12 @@ public class Hotel {
 
     private String description;
 
+    private String address;
+
     private Double distance;
 
     private Double rating;
 
-    @Column(nullable = false, columnDefinition = "integer default 0")
-    private Integer freeApart = 0;
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer countApart = 0;
 
@@ -44,9 +44,6 @@ public class Hotel {
             fetch = FetchType.EAGER,
             orphanRemoval = true)
     private List<Room> roomList;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Address> addressList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Photo> photos;

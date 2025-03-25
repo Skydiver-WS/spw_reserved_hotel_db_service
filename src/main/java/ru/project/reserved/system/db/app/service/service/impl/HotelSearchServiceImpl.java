@@ -27,11 +27,9 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     @Override
     public List<HotelResponse> searchHotels(@Validated HotelRequest request) {
-        List<Hotel> hotels = hotelRepository.findHotelsByCityList(Set.of(City.builder()
-                .name(request.getHotelSearch().getCity())
-                .build()));
+        List<Hotel> hotels = hotelRepository.findHotelsByCityList_Name(request.getHotelSearch().getCity());
         findAndSortByName(hotels, request);
-        findAndSortByDate(hotels, request);
+        //findAndSortByDate(hotels, request);
         findAndSortByDistance(hotels, request);
         findAndSortByRating(hotels, request);
         findAndSortByCoast(hotels, request);
@@ -45,12 +43,12 @@ public class HotelSearchServiceImpl implements HotelSearchService {
                 && !h.getName().equals(request.getHotelSearch().getHotelName()));
     }
 
-    private void findAndSortByDate(List<Hotel> hotels, HotelRequest request) {
-        log.info("Sorted by date");
-        hotels.removeIf(h -> h.getRoomList()
-                .removeIf(r -> r.getStartReserved().after(request.getHotelSearch().getStartReserved())
-                        && r.getEndReserved().before(request.getHotelSearch().getEndReserved())));
-    }
+//    private void findAndSortByDate(List<Hotel> hotels, HotelRequest request) {
+//        log.info("Sorted by date");
+//        hotels.removeIf(h -> h.getRoomList()
+//                .removeIf(r -> r.getStartReserved().after(request.getHotelSearch().getStartReserved())
+//                        && r.getEndReserved().before(request.getHotelSearch().getEndReserved())));
+//    }
 
     private void findAndSortByDistance(List<Hotel> hotels, HotelRequest request) {
         log.info("Sorted by distance");
@@ -76,16 +74,18 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     private void findAndSortByCoast(List<Hotel> hotels, HotelRequest request) {
         log.info("Sorted by coast");
-        hotels.removeIf(h -> {
-            List<Room> filteredRooms = h.getRoomList().stream()
-                    .filter(room -> Objects.nonNull(request.getHotelSearch().getCoastMin())
-                            && room.getCoast() >= request.getHotelSearch().getCoastMin())
-                    .filter(room -> Objects.nonNull(request.getHotelSearch().getCoastMax())
-                            && room.getCoast() <= request.getHotelSearch().getCoastMax())
-                    .toList();
-            h.setRoomList(filteredRooms);
-            return filteredRooms.isEmpty();
-        });
+        if (Objects.nonNull(request.getHotelSearch().getCoastMin())
+                || Objects.nonNull(request.getHotelSearch().getCoastMax())){
+            hotels.removeIf(h -> {
+                List<Room> filteredRooms = h.getRoomList().stream()
+                        .filter(room -> room.getCoast() >= request.getHotelSearch().getCoastMin())
+                        .filter(room -> room.getCoast() <= request.getHotelSearch().getCoastMax())
+                        .toList();
+                h.setRoomList(filteredRooms);
+                return filteredRooms.isEmpty();
+            });
+        }
+
     }
 
 

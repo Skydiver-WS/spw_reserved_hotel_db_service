@@ -10,7 +10,7 @@ public interface RoomService {
     RoomResponse createRoom(RoomRequest room);
     List<RoomResponse> findRoomsForParameters(RoomRequest request);
     RoomResponse updateRoom(RoomRequest room);
-    void removeRoom(Integer id);
+    RoomResponse removeRoom(Long hotelId, Long roomId);
 
     RoomResponse reservedRoom(RoomRequest roomRequest);
 }
