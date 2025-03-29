@@ -65,10 +65,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomResponse> findRoomsForParameters(RoomRequest request) {
         log.info("Find rooms for parameters");
-        List<RoomResponse> roomResponses = searchService.searchRoomByParameter(request);
+        List<Room> roomResponses = searchService.searchRoomByParameter(request);
         return roomResponses.isEmpty() ? List.of(RoomResponse.builder()
                 .errorMessage("Rooms not found")
-                .build()) : roomResponses;
+                .build()) : roomMapper.roomsToRoomResponses(roomResponses);
     }
 
     @Override

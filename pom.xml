@@ -71,6 +71,12 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>virtual-thread</id>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>

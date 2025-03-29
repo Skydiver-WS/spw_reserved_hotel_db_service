@@ -83,7 +83,14 @@ public class HotelServiceImpl implements HotelService {
         Hotel hotel = hotelOptional.get();
         hotelMapper.updateHotelByHotelRequest(hotel, hotelRequest);
         try {
-            Hotel updatedHotel = hotelRepository.save(hotel);
+            Hotel updatedHotel;
+            if (hotelRequest.getPhotos() != null) {
+                hotel.setPhotos(hotelRequest.getPhotos());
+                updatedHotel = hotelRepository.save(hotel);
+            } else {
+                hotel.setPhotos(hotelOptional.get().getPhotos());
+                updatedHotel = hotelRepository.save(hotel);
+            }
             return hotelMapper.mappingHotelToHotelRequest(updatedHotel);
         } catch (Exception ex) {
             log.error(ex.getMessage());

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
+import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
 import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
@@ -14,6 +16,7 @@ import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.service.HotelSearchService;
+import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
 import java.util.*;
 
@@ -24,12 +27,13 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final RoomSearchService roomSearchService;
 
     @Override
     public List<HotelResponse> searchHotels(@Validated HotelRequest request) {
         List<Hotel> hotels = hotelRepository.findHotelsByCityList_Name(request.getHotelSearch().getCity());
         findAndSortByName(hotels, request);
-        //findAndSortByDate(hotels, request);
+        findAndSortByDate(hotels, request);
         findAndSortByDistance(hotels, request);
         findAndSortByRating(hotels, request);
         findAndSortByCoast(hotels, request);
@@ -43,12 +47,20 @@ public class HotelSearchServiceImpl implements HotelSearchService {
                 && !h.getName().equals(request.getHotelSearch().getHotelName()));
     }
 
-//    private void findAndSortByDate(List<Hotel> hotels, HotelRequest request) {
-//        log.info("Sorted by date");
-//        hotels.removeIf(h -> h.getRoomList()
-//                .removeIf(r -> r.getStartReserved().after(request.getHotelSearch().getStartReserved())
-//                        && r.getEndReserved().before(request.getHotelSearch().getEndReserved())));
-//    }
+    private void findAndSortByDate(List<Hotel> hotels, HotelRequest request) {
+        log.info("Sorted by date");
+        hotels.removeIf(h -> {
+            RoomRequest roomRequest = new RoomRequest();
+            roomRequest.setRoomSearch(RoomRequest.RoomSearchRequest.builder()
+                    .hotelId(h.getId())
+                    .startReserved(request.getHotelSearch().getStartReserved())
+                    .endReserved(request.getHotelSearch().getEndReserved())
+                    .build());
+            List<Room> rooms = roomSearchService.searchRoomByParameter(roomRequest);
+            h.setRoomList(rooms);
+            return rooms.isEmpty();
+        });
+    }
 
     private void findAndSortByDistance(List<Hotel> hotels, HotelRequest request) {
         log.info("Sorted by distance");

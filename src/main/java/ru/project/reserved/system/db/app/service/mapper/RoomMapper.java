@@ -1,9 +1,6 @@
 package ru.project.reserved.system.db.app.service.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.entity.Booking;
@@ -15,7 +12,8 @@ import java.util.UUID;
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
 
-    @Mapping(source = "bookings", target = "bookingId", qualifiedByName = "setIdBooking")
+    @Mapping(source = "bookings", target = "bookingId", qualifiedByName = "setIdBooking",
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     RoomResponse roomToRoomResponse(Room room);
 
     List<RoomResponse> roomsToRoomResponses(List<Room> rooms);
@@ -25,6 +23,9 @@ public interface RoomMapper {
 
     @Named("setIdBooking")
     default UUID setIdBooking(List<Booking> bookings) {
+        if (bookings == null || bookings.isEmpty()) {
+            return null;
+        }
         return bookings.getFirst().getId();
     }
 }

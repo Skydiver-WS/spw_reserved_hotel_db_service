@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import ru.project.reserved.system.db.app.service.properties.KafkaConsumerProperties;
@@ -24,6 +25,7 @@ public class Listener {
     @KafkaListener(groupId = "${spring.kafka.consumer.topic.kafkaMessageGroupId}",
             topics = "#{@kafkaConsumerTopics}",
             containerFactory = "kafkaListenerContainerFactory")
+    @Async
     public void kafkaListener(String message,
                               @Header(value = KafkaHeaders.RECEIVED_TOPIC, required = false) String topic,
                               @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key) {

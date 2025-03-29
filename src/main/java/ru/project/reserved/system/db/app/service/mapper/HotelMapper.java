@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {RoomMapper.class, CityMapper.class})
+@Mapper(componentModel = "spring", uses = {RoomMapper.class, CityMapper.class, PhotoMapper.class })
 public interface HotelMapper {
 
     @Mapping(target = "countApart", expression = "java(0)")
@@ -32,6 +32,7 @@ public interface HotelMapper {
     @Mapping(target = "address", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "distance", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "rating", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "photos", ignore = true)
     void updateHotelByHotelRequest(@MappingTarget Hotel hotel, HotelRequest hotelRequest);
 
     @Named("minCoast")
@@ -51,3 +52,4 @@ public interface HotelMapper {
                 .build());
     }
 }
+

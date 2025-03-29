@@ -27,12 +27,10 @@ import java.util.Objects;
 public class RoomSearchServiceImpl implements RoomSearchService {
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
-    private final RoomMapper roomMapper;
 
     @Override
-    public List<RoomResponse> searchRoomByParameter(RoomRequest roomRequest) {
-        List<Room> rooms = findAndFilterRooms(roomRequest);
-        return roomMapper.roomsToRoomResponses(rooms);
+    public List<Room> searchRoomByParameter(RoomRequest roomRequest) {
+        return findAndFilterRooms(roomRequest);
     }
 
     @Override
@@ -59,6 +57,10 @@ public class RoomSearchServiceImpl implements RoomSearchService {
             startReserved = roomRequest.getRoomBooking().getStartReserved();
             endReserved = roomRequest.getRoomBooking().getEndReserved();
             classType = roomRequest.getRoomBooking().getClassType();
+            if(startReserved == null || endReserved == null) {
+                log.error("Start date reserved {} or end date reserved {} is null", startReserved, endReserved);
+                throw  new BookingException("Not date reserved");
+            }
         }
         Hotel hotel = hotelRepository.findById(hotelId).orElse(null);
         List<Room> rooms = roomRepository.findRoomsByHotel(hotel);
@@ -69,10 +71,6 @@ public class RoomSearchServiceImpl implements RoomSearchService {
     }
 
     private void filterByDateReserved(List<Room> rooms, Date startReserved, Date endReserved) {
-        if(startReserved == null || endReserved == null) {
-            log.error("Start date reserved {} or end date reserved {} is null", startReserved, endReserved);
-            throw  new BookingException("Not date reserved");
-        }
         rooms.removeIf(room -> room.getBookings().stream()
                 .anyMatch(booking ->
                         (startReserved.before(booking.getEndReserved()) && endReserved.after(booking.getStartReserved()))
