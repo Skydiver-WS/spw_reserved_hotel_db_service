@@ -74,6 +74,12 @@
 	<profiles>
 		<profile>
 			<id>virtual-thread</id>
+			<activation>
+				<property>
+					<name>spring.profiles.active</name>
+					<value>virtual-thread,upload</value>
+				</property>
+			</activation>
 		</profile>
 	</profiles>
 

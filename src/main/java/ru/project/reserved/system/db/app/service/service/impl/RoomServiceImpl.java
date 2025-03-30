@@ -58,7 +58,8 @@ public class RoomServiceImpl implements RoomService {
         hotel.setCountApart(hotel.getCountApart() + 1);
         newRoom.setHotel(hotel);
         Room room = roomRepository.save(newRoom);
-        hotelRepository.save(hotel);
+        hotelRepository.saveAndFlush(hotel);
+        log.info("Room save successful");
         return roomMapper.roomToRoomResponse(room);
     }
 

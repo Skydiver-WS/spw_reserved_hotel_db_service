@@ -67,8 +67,7 @@ spring:
     hikari:
       schema: hotel
       connection-init-sql: CREATE SCHEMA IF NOT EXISTS hotel
-      connection-timeout: 5000
-      maximum-pool-size: 10000
-      max-lifetime: 120000
-      idle-timeout: 130000
-
+      connection-timeout: 50000000
+      maximum-pool-size: 100000
+      max-lifetime: 120000000
+      idle-timeout: 130000000

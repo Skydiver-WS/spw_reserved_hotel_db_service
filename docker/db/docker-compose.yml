@@ -7,3 +7,5 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=hotel_db
+    command: >
+      postgres -c max_connections=50000
