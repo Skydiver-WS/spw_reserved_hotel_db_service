@@ -1,15 +1,15 @@
 package ru.project.reserved.system.db.app.service.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
-import ru.project.reserved.system.db.app.service.dto.type.StatusType;
-import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
@@ -33,13 +33,17 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    @Transactional
     public List<RoomResponse> findAllRooms() {
         log.info("Find all rooms");
         return roomMapper.roomsToRoomResponses(roomRepository.findAll());
     }
 
     @Override
+    @Transactional
+    @Retryable(
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 100, multiplier = 3)
+    )
     public RoomResponse createRoom(RoomRequest roomRequest) {
         log.info("Create room");
         Hotel hotel = hotelRepository.findById(roomRequest.getHotelId()).
@@ -58,7 +62,7 @@ public class RoomServiceImpl implements RoomService {
         hotel.setCountApart(hotel.getCountApart() + 1);
         newRoom.setHotel(hotel);
         Room room = roomRepository.save(newRoom);
-        hotelRepository.saveAndFlush(hotel);
+        hotelRepository.save(hotel);
         log.info("Room save successful");
         return roomMapper.roomToRoomResponse(room);
     }

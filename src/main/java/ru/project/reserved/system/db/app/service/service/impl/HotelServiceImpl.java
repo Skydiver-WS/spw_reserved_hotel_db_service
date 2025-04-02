@@ -1,10 +1,13 @@
 package ru.project.reserved.system.db.app.service.service.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.NonUniqueResultException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.aop.SearchEntity;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
@@ -52,6 +55,11 @@ public class HotelServiceImpl implements HotelService {
     @SneakyThrows
     @SearchEntity
     @Transactional
+    @Retryable(
+            retryFor = {NonUniqueResultException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 100, multiplier = 3)
+    )
     public HotelResponse createHotel(HotelRequest hotelRequest) {
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
         log.info("Create hotel {}", hotel.getName());
@@ -61,8 +69,7 @@ public class HotelServiceImpl implements HotelService {
             Hotel newHotel = hotelRepository.save(hotel);
             return hotelMapper.mappingHotelToHotelRequest(newHotel);
         } catch (Exception ex) {
-            log.error(ex.getMessage());
-            ex.printStackTrace();
+            log.error(ex.getMessage(), ex);
             return HotelResponse.builder()
                     .name(hotelRequest.getName())
                     .errorMessage(ex.getMessage())

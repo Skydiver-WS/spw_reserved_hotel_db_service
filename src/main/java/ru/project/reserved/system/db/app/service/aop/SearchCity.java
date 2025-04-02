@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
+import ru.project.reserved.system.db.app.service.exception.HotelException;
 import ru.project.reserved.system.db.app.service.mapper.CityMapper;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
@@ -35,11 +36,8 @@ public class SearchCity {
             if (arg instanceof HotelRequest hotelRequest) {
                 boolean findHotel = hotelRepository.existsByNameAndCityList_Name(hotelRequest.getName(), hotelRequest.getCity().getName());
                 if (findHotel) {
-                    return HotelResponse.builder()
-                            .name(hotelRequest.getName())
-                            .errorMessage("Hotel " + hotelRequest.getName() + " already exists in city "
-                                    + hotelRequest.getCity().getName())
-                            .build();
+                    throw  new HotelException("Hotel " + hotelRequest.getName() + " already exists in city "
+                            + hotelRequest.getCity().getName());
                 }
             }
         }

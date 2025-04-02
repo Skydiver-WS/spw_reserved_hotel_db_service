@@ -7,6 +7,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
@@ -34,12 +36,11 @@ public class KafkaServiceImpl implements KafkaService {
     public void getMessageGroupDataBase(String topic, String key, String message) {
         log.info("Topic: {}\n" +
                 " Key: {}", topic, key);
-        if (topic.contains("hotel")) {
-            operationInHotels(topic, key, message);
-        } else if (topic.contains("room")) {
-            operationInRooms(topic, key, message);
-        }
-
+            if (topic.contains("hotel")) {
+                operationInHotels(topic, key, message);
+            } else if (topic.contains("room")) {
+                operationInRooms(topic, key, message);
+            }
     }
 
     @SneakyThrows

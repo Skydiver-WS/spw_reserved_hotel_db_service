@@ -61,14 +61,15 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
+#    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
+    url: jdbc:postgresql://192.168.31.196:5432/hotel_db
     username: postgres
     password: postgres
     hikari:
       schema: hotel
       connection-init-sql: CREATE SCHEMA IF NOT EXISTS hotel
-      connection-timeout: 5000
+      connection-timeout: 500000
       maximum-pool-size: 10000
-      max-lifetime: 120000
-      idle-timeout: 130000
+      max-lifetime: 1200000
+      idle-timeout: 1300000
 

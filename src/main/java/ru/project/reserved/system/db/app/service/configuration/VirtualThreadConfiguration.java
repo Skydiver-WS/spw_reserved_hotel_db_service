@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 @Configuration
 @EnableAsync
 @Slf4j
-@Profile(value = {"virtual-thread"})
 public class VirtualThreadConfiguration {
     @Bean
     public AsyncTaskExecutor applicationTaskExecutor() {
