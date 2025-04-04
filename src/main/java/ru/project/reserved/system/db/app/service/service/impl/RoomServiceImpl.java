@@ -3,6 +3,7 @@ package ru.project.reserved.system.db.app.service.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,8 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Retryable(
             maxAttempts = 5,
-            backoff = @Backoff(delay = 100, multiplier = 3)
+            backoff = @Backoff(delay = 100, multiplier = 3),
+            retryFor = {ObjectOptimisticLockingFailureException.class}
     )
     public RoomResponse createRoom(RoomRequest roomRequest) {
         log.info("Create room");
@@ -59,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
                 newRoom.setNumberApart(num + 1);
             }
         });
-        hotel.setCountApart(hotel.getCountApart() + 1);
+        hotel.setCountApart(hotel.getCountApart() + 1); //TODO поправить установку номера комнаты с учетом многопоточки
         newRoom.setHotel(hotel);
         Room room = roomRepository.save(newRoom);
         hotelRepository.save(hotel);

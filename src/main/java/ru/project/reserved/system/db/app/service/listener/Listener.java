@@ -31,6 +31,7 @@ public class Listener {
     @KafkaListener(groupId = "${spring.kafka.consumer.topic.kafkaMessageGroupId}",
             topics = "#{@kafkaConsumerTopics}",
             containerFactory = "kafkaListenerContainerFactory")
+    @Async
     public void kafkaListener(String message,
                               @Header(value = KafkaHeaders.RECEIVED_TOPIC, required = false) String topic,
                               @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key) {

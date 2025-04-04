@@ -67,6 +67,7 @@ public class HotelServiceImpl implements HotelService {
             Optional<City> city = cityRepository.findCityByName(hotelRequest.getCity().getName());
             city.ifPresent(value -> hotel.setCityList(Set.of(value)));
             Hotel newHotel = hotelRepository.save(hotel);
+            log.info("Hotel: {} create successful", newHotel.getName());
             return hotelMapper.mappingHotelToHotelRequest(newHotel);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);

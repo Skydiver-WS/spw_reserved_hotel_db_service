@@ -19,6 +19,9 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Version
+    private Long version;
+
     private Long numberApart;
 
     private Double coast;

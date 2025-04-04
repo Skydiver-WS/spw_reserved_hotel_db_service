@@ -17,6 +17,9 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Version
+    private Long version;
+
     private String name;
 
     private String description;
