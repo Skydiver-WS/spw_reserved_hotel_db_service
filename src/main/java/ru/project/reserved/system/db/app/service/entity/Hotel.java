@@ -33,18 +33,12 @@ public class Hotel {
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer countApart = 0;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {CascadeType.DETACH,
-                    CascadeType.MERGE,
-                    CascadeType.PERSIST,
-                    CascadeType.REFRESH})
-    @JoinTable(name = "hotel_city",
-    joinColumns = @JoinColumn(name = "hotel_id"),
-    inverseJoinColumns = @JoinColumn(name = "city_id"))
-    private Set<City> cityList;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hotel",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             orphanRemoval = true)
     private List<Room> roomList;
 

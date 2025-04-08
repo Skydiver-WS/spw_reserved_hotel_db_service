@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.NonUniqueResultException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,11 @@ import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.CityRepository;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
+import ru.project.reserved.system.db.app.service.service.CityService;
 import ru.project.reserved.system.db.app.service.service.HotelSearchService;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -27,7 +31,7 @@ import java.util.*;
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
-    private final CityRepository cityRepository;
+    private final CityService cityService;
     private final HotelMapper hotelMapper;
     private final HotelSearchService hotelSearchService;
 
@@ -54,28 +58,24 @@ public class HotelServiceImpl implements HotelService {
     @Override
     @SneakyThrows
     @SearchEntity
-    @Transactional
     @Retryable(
-            retryFor = {NonUniqueResultException.class},
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 100, multiplier = 3)
+            retryFor = {IncorrectResultSizeDataAccessException.class, DataAccessException.class, IOException.class},
+            maxAttempts = 10,
+            backoff = @Backoff(delay = 500, multiplier = 2)
     )
     public HotelResponse createHotel(HotelRequest hotelRequest) {
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
         log.info("Create hotel {}", hotel.getName());
-        try {
-            Optional<City> city = cityRepository.findCityByName(hotelRequest.getCity().getName());
-            city.ifPresent(value -> hotel.setCityList(Set.of(value)));
-            Hotel newHotel = hotelRepository.save(hotel);
-            log.info("Hotel: {} create successful", newHotel.getName());
-            return hotelMapper.mappingHotelToHotelRequest(newHotel);
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            return HotelResponse.builder()
-                    .name(hotelRequest.getName())
-                    .errorMessage(ex.getMessage())
-                    .build();
+        Optional<City> city = cityService.findCity(hotelRequest.getCity().getName());
+        log.info("Get result in db");
+        if (city.isEmpty()) {
+            city = Optional.of(cityService.saveCity(hotelRequest.getCity()));
         }
+        city.ifPresent(hotel::setCity);
+        log.info("Attempt save hotel {}", hotel.getName());
+        Hotel newHotel = hotelRepository.save(hotel);
+        log.info("Hotel: {} save successful", newHotel.getName());
+        return hotelMapper.mappingHotelToHotelRequest(newHotel);
     }
 
     @Override

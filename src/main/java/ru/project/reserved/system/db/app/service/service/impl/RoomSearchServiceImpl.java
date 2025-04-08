@@ -30,11 +30,13 @@ public class RoomSearchServiceImpl implements RoomSearchService {
 
     @Override
     public List<Room> searchRoomByParameter(RoomRequest roomRequest) {
+        log.info("Search rooms");
         return findAndFilterRooms(roomRequest);
     }
 
     @Override
     public List<Room> searchRoomByParameterForReserved(RoomRequest roomRequest) {
+        log.info("Search rooms by reserved");
         return findAndFilterRooms(roomRequest);
     }
 

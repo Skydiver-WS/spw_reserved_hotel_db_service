@@ -12,6 +12,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -19,8 +20,7 @@ public class City {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            mappedBy = "cityList")
-    private Set<Hotel> hotels;
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Hotel> hotels;
 
 }

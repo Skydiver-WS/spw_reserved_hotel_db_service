@@ -17,6 +17,7 @@ import ru.project.reserved.system.db.app.service.properties.KafkaConsumerPropert
 import ru.project.reserved.system.db.app.service.service.kafka.KafkaService;
 
 import java.util.Arrays;
+import java.util.concurrent.Semaphore;
 
 @Service
 @Slf4j
@@ -31,15 +32,12 @@ public class Listener {
     @KafkaListener(groupId = "${spring.kafka.consumer.topic.kafkaMessageGroupId}",
             topics = "#{@kafkaConsumerTopics}",
             containerFactory = "kafkaListenerContainerFactory")
-    @Async
     public void kafkaListener(String message,
                               @Header(value = KafkaHeaders.RECEIVED_TOPIC, required = false) String topic,
                               @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key) {
-
-            if (Arrays.asList(kafkaConsumerProperties.getTopicList()).contains(topic)) {
-                log.debug("Get topic {}, key: {}", topic, key);
-                kafkaService.getMessageGroupDataBase(topic, key, message);
-            }
-
+        if (Arrays.asList(kafkaConsumerProperties.getTopicList()).contains(topic)) {
+            log.debug("Get topic {}, key: {}", topic, key);
+            kafkaService.getMessageGroupDataBase(topic, key, message);
+        }
     }
 }

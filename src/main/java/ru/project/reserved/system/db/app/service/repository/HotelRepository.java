@@ -2,6 +2,8 @@ package ru.project.reserved.system.db.app.service.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
@@ -13,15 +15,11 @@ import java.util.Set;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    List<Hotel> findHotelsByName(String hotelName);
-    Optional<Hotel> findHotelByName(String hotelName);
-    List<Hotel> findHotelsByCityList_Name(String cityName);
-    List<Hotel> findHotelsByRatingGreaterThanEqual(Double rating);
-    List<Hotel> findHotelsByRatingLessThanEqual(Double rating);
-    List<Hotel> findHotelsByRatingBetween(Double minRating, Double maxRating);
-    List<Hotel> findHotelsByRating(Double rating);
-    List<Hotel> findHotelsByDistance(Double distance);
-    boolean existsByNameAndCityList_Name(String name, String cityName);
-    boolean existsByIdAndRoomList_Id(Long hotelId, Long roomId);
+    List<Hotel> findHotelsByCity_Name(String cityName);
+
+    @Query("SELECT h.id, h.countApart, SIZE(h.roomList) FROM Hotel h")
+    List<Long[]> findAllWithRoomCount();
+    List<Hotel> findAllByIdIn(List<Long> ids);
+    boolean existsByNameAndCity_Name(String name, String cityName);
 
 }

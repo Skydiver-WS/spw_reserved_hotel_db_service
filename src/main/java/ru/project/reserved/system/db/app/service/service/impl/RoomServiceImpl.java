@@ -3,10 +3,13 @@ package ru.project.reserved.system.db.app.service.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.NonUniqueResultException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
@@ -20,6 +23,7 @@ import ru.project.reserved.system.db.app.service.service.BookingService;
 import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -40,28 +44,20 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    @Transactional
     @Retryable(
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 100, multiplier = 3),
-            retryFor = {ObjectOptimisticLockingFailureException.class}
+            maxAttempts = 10,
+            backoff = @Backoff(delay = 500, multiplier = 2),
+            retryFor = {ObjectOptimisticLockingFailureException.class,
+                    DataAccessException.class,
+                    IOException.class,
+                    NonUniqueResultException.class,
+                    CannotCreateTransactionException.class}
     )
     public RoomResponse createRoom(RoomRequest roomRequest) {
         log.info("Create room");
         Hotel hotel = hotelRepository.findById(roomRequest.getHotelId()).
                 orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRequest.getHotelId() + " not found"));
         Room newRoom = roomMapper.roomResponseToRoom(roomRequest);
-        hotel.getRoomList().forEach(room -> {
-            Long numCreate = newRoom.getNumberApart();
-            if (Objects.equals(room.getNumberApart(), numCreate)) {
-                Long num = hotel.getRoomList().stream()
-                        .map(Room::getNumberApart) // Извлекаем номера комнат
-                        .max(Comparator.naturalOrder()) // Ищем максимальный
-                        .orElse(0L);
-                newRoom.setNumberApart(num + 1);
-            }
-        });
-        hotel.setCountApart(hotel.getCountApart() + 1); //TODO поправить установку номера комнаты с учетом многопоточки
         newRoom.setHotel(hotel);
         Room room = roomRepository.save(newRoom);
         hotelRepository.save(hotel);

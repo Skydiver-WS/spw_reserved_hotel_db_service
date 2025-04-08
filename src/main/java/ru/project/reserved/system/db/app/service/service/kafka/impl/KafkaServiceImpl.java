@@ -33,6 +33,7 @@ public class KafkaServiceImpl implements KafkaService {
 
 
     @Override
+    @Async
     public void getMessageGroupDataBase(String topic, String key, String message) {
         log.info("Topic: {}\n" +
                 " Key: {}", topic, key);

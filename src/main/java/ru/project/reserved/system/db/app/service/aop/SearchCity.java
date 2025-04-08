@@ -34,7 +34,7 @@ public class SearchCity {
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             if (arg instanceof HotelRequest hotelRequest) {
-                boolean findHotel = hotelRepository.existsByNameAndCityList_Name(hotelRequest.getName(), hotelRequest.getCity().getName());
+                boolean findHotel = hotelRepository.existsByNameAndCity_Name(hotelRequest.getName(), hotelRequest.getCity().getName());
                 if (findHotel) {
                     throw  new HotelException("Hotel " + hotelRequest.getName() + " already exists in city "
                             + hotelRequest.getCity().getName());

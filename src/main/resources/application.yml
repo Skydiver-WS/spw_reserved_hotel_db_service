@@ -1,6 +1,11 @@
 server:
   port: 8081
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 2
+
   kafka:
     bootstrap-servers: 127.0.0.1:9093 # Укажите адрес вашего сервера Kafka
     producer:
@@ -61,9 +66,9 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-#    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
+    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
 #    url: jdbc:postgresql://192.168.31.196:5432/hotel_db
-    url: jdbc:postgresql://127.0.0.1:5432/hotel_db
+#    url: jdbc:postgresql://127.0.0.1:5432/hotel_db
     username: postgres
     password: postgres
     hikari:
@@ -71,6 +76,8 @@ spring:
       connection-init-sql: CREATE SCHEMA IF NOT EXISTS hotel
       connection-timeout: 500000
       maximum-pool-size: 10000
-      max-lifetime: 1200000
-      idle-timeout: 1300000
+      idle-timeout: 600000             # 1 минута
+      max-lifetime: 3000000
+scheduler:
+  start-task: "0 */30 * * * *"
 

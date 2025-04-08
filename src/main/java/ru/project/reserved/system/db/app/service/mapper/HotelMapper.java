@@ -9,13 +9,12 @@ import ru.project.reserved.system.db.app.service.entity.Room;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {RoomMapper.class, CityMapper.class, PhotoMapper.class })
 public interface HotelMapper {
 
     @Mapping(target = "countApart", expression = "java(0)")
-    @Mapping(target = "cityList", source = "city.name", qualifiedByName = "setCities")
+    //@Mapping(target = "cityList", source = "city.name", qualifiedByName = "setCities")
     Hotel mappingHotelRequestToHotel(HotelRequest hotelRequest);
 
     List<HotelResponse> mappingHotelListToHotelResponseList(List<Hotel> hotelList);
@@ -46,8 +45,8 @@ public interface HotelMapper {
     }
 
     @Named("setCities")
-    default Set<City> setCities(String city) {
-        return Set.of(City.builder()
+    default List<City> setCities(String city) {
+        return List.of(City.builder()
                 .name(city)
                 .build());
     }
