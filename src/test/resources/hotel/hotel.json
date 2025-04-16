@@ -1,0 +1,27 @@
+{
+  "name": "Hotel Москва",
+  "description": "A luxurious hotel with a beautiful seaside view",
+  "address": "123 Beach Avenue",
+  "distance": 1.5,
+  "rating": 5.0,
+  "photos": [
+    {
+      "photo": "WERGEWRTWERYWERTHRTHEYHFGNDFGN"
+    },
+    {
+      "photo": "WERGSEFHSDFGHDFGJDFJHKFGHGHJKJXDSEH"
+    },
+    {
+      "photo": "SERTHSDFGHDFGHJDFHJDGJDFGSETRH"
+    },
+    {
+      "photo": "SRTHDRTHTYJGFBNFSJFHSRHGVHDSJDFHCVDTTJ"
+    }
+  ],
+  "city": {
+    "name": "Москва",
+    "address": {
+      "address": "Los Angeles City Center"
+    }
+  }
+}

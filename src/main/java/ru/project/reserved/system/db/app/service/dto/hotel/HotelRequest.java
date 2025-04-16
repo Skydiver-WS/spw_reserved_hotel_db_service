@@ -31,12 +31,9 @@ public class HotelRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class HotelSearchRequest {
-        @NotNull
         private String city;
         private String hotelName;
-        //@NotNull
         private Date startReserved;
-        //@NotNull
         private Date endReserved;
         private SortType sortCoast;
         private Long coastMin;

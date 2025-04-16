@@ -85,7 +85,7 @@ public class HotelServiceImpl implements HotelService {
         if (hotelOptional.isEmpty()) {
             return HotelResponse.builder()
                     .id(hotelRequest.getId())
-                    .errorMessage("Hotel with id" + hotelRequest.getId() + "not found")
+                    .errorMessage("Hotel with id " + hotelRequest.getId() + " not found")
                     .build();
         }
         Hotel hotel = hotelOptional.get();

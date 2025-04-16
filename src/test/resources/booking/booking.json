@@ -1,0 +1,32 @@
+[
+  {
+    "roomBooking": {
+      "hotelId": 1,
+      "hotelName": "Hotel Москва",
+      "startReserved": "2025-04-01",
+      "endReserved": "2025-04-05",
+      "classType": "ECONOMY",
+      "operationType": "CREATE"
+    }
+  },
+  {
+    "roomBooking": {
+      "hotelId": 1,
+      "hotelName": "Hotel Москва",
+      "startReserved": "2025-04-01",
+      "endReserved": "2025-04-05",
+      "classType": "ECONOMY",
+      "operationType": "CREATE"
+    }
+  },
+  {
+    "roomBooking": {
+      "hotelId": 1,
+      "hotelName": "Hotel Москва",
+      "startReserved": "2025-04-01",
+      "endReserved": "2025-04-05",
+      "classType": "ECONOMY",
+      "operationType": "CREATE"
+    }
+  }
+]

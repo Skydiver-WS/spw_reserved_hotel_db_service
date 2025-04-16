@@ -21,7 +21,7 @@ public class HotelResponse {
     private String address;
     private Double distance;
     private Double minCoast;
-    private String rating;
+    private Double rating;
     private Integer freeApart;
     private Integer countApart;
     private List<Photo> photos;

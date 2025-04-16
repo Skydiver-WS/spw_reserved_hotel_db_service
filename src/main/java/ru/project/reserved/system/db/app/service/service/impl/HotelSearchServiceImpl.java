@@ -31,7 +31,6 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
-    private final RoomSearchService roomSearchService;
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
 
@@ -68,24 +67,14 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     private void findAndSortByDistance(List<Hotel> hotels, HotelRequest request) {
         log.info("Sorted by distance");
-        hotels.removeIf(h -> Objects.nonNull(request.getDistance()) && h.getDistance() > request.getDistance());
-        Comparator<Hotel> comparator = Comparator.comparingDouble(Hotel::getDistance);
-        if (Objects.nonNull(request.getDistance()) && request.getHotelSearch().getSortDistance().equals(SortType.DESC)) {
-            comparator = comparator.reversed();
-        }
-        hotels.sort(comparator);
-
+        hotels.removeIf(h -> Objects.nonNull(request.getHotelSearch().getDistance())
+                && h.getDistance() > request.getHotelSearch().getDistance());
     }
 
     private void findAndSortByRating(List<Hotel> hotels, HotelRequest request) {
         log.info("Sorted by rating");
-        hotels.removeIf(h -> Objects.nonNull(request.getRating()) && h.getRating() < request.getRating());
-        Comparator<Hotel> comparator = Comparator.comparingDouble(Hotel::getRating);
-        if (Objects.nonNull(request.getHotelSearch().getSortRating())
-                && request.getHotelSearch().getSortRating().equals(SortType.DESC)) {
-            comparator = comparator.reversed();
-        }
-        hotels.sort(comparator);
+        hotels.removeIf(h -> Objects.nonNull(request.getHotelSearch().getRating())
+                && h.getRating() < request.getHotelSearch().getRating());
     }
 
     private void findAndSortByCoast(List<Hotel> hotels, HotelRequest request) {

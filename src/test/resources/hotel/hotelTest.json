@@ -1,0 +1,27 @@
+{
+  "name": "Hotel Рамен",
+  "description": "A luxurious hotel with a beautiful seaside view",
+  "address": "123 Beach Avenue",
+  "distance": 15.5,
+  "rating": 3.7,
+  "photos": [
+    {
+      "photo": "WERGEWRTWERYWERTHRTHEYHFGNDFGN"
+    },
+    {
+      "photo": "WERGSEFHSDFGHDFGJDFJHKFGHGHJKJXDSEH"
+    },
+    {
+      "photo": "SERTHSDFGHDFGHJDFHJDGJDFGSETRH"
+    },
+    {
+      "photo": "SRTHDRTHTYJGFBNFSJFHSRHGVHDSJDFHCVDTTJ"
+    }
+  ],
+  "city": {
+    "name": "Рамен",
+    "address": {
+      "address": "Los Angeles City Center"
+    }
+  }
+}

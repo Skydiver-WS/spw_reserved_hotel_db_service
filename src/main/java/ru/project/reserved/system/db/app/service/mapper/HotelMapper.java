@@ -50,5 +50,12 @@ public interface HotelMapper {
                 .name(city)
                 .build());
     }
+
+    @AfterMapping
+    default void sortHotelByRating(@MappingTarget List<HotelResponse> responses) {
+        if (responses != null) {
+            responses.sort(Comparator.comparingDouble(HotelResponse::getRating).reversed());
+        }
+    }
 }
 

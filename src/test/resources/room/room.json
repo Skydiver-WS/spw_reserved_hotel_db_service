@@ -1,0 +1,146 @@
+[
+  {
+    "hotelId": 1,
+    "numberApart": 1,
+    "description": "Test desciption",
+    "classRoomType": "ECONOMY",
+    "coast": "10000.0",
+    "photoList": [
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      }
+    ]
+  },
+  {
+    "hotelId": 1,
+    "numberApart": 2,
+    "description": "Test desciption",
+    "classRoomType": "ECONOMY",
+    "coast": "10000.0",
+    "photoList": [
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      }
+    ]
+  },
+  {
+    "hotelId": 1,
+    "numberApart": 3,
+    "description": "Test desciption",
+    "classRoomType": "ECONOMY",
+    "coast": "10000.0",
+    "photoList": [
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      }
+    ]
+  },
+  {
+    "hotelId": 2,
+    "numberApart": 1,
+    "description": "Test desciption",
+    "classRoomType": "ECONOMY",
+    "coast": "1000.0",
+    "photoList": [
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      }
+    ]
+  },
+  {
+    "hotelId": 2,
+    "numberApart": 2,
+    "description": "Test desciption",
+    "classRoomType": "ECONOMY",
+    "coast": "5000.0",
+    "photoList": [
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      }
+    ]
+  },
+  {
+    "hotelId": 2,
+    "numberApart": 3,
+    "description": "Test desciption",
+    "classRoomType": "ECONOMY",
+    "coast": "10000.0",
+    "photoList": [
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      },
+      {
+        "photo": "KLJGFGWELKFLKWEGFLKWEGFK"
+      }
+    ]
+  }
+]
