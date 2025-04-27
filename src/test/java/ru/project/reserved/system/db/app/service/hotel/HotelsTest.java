@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import ru.project.reserved.system.db.app.service.AbstractTest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.entity.Hotel;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -30,8 +31,9 @@ public class HotelsTest extends AbstractTest {
     @Test
     @Order(2)
     public void updateHotelTest() {
+        Hotel hotel = hotelRepository.findAll().getFirst();
         HotelRequest hotelRequest = HotelRequest.builder()
-                .id(4L)
+                .id(hotel.getId())
                 .name("Hotel Atas")
                 .build();
         HotelResponse response = hotelService.updateHotel(hotelRequest);
@@ -42,11 +44,12 @@ public class HotelsTest extends AbstractTest {
     @Test
     @Order(3)
     public void deleteHotelTest() {
+        Hotel hotel = hotelRepository.findAll().getFirst();
         HotelRequest hotelRequest = HotelRequest.builder()
-                .id(6L)
+                .id(hotel.getId())
                 .build();
         HotelResponse response = hotelService.deleteHotel(hotelRequest);
-        Assertions.assertEquals("Hotel with id 6 delete", response.getMessage());
+        Assertions.assertEquals("Hotel with id "  + hotel.getId()  + " delete", response.getMessage());
     }
 
     @Test

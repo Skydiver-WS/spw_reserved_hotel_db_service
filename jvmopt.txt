@@ -1,0 +1,1 @@
+-XX:+UseZGC -Xms16G -Xmx30G -Xlog:gc -XX:ConcGCThreads=4

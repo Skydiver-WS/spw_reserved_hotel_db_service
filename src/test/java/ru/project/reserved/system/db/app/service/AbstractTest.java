@@ -1,6 +1,8 @@
 package ru.project.reserved.system.db.app.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -21,9 +23,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.entity.Booking;
-import ru.project.reserved.system.db.app.service.entity.Hotel;
-import ru.project.reserved.system.db.app.service.entity.Room;
+import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
+import ru.project.reserved.system.db.app.service.entity.*;
 import ru.project.reserved.system.db.app.service.listener.Listener;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
@@ -38,6 +39,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static ru.project.reserved.system.db.app.service.dto.type.ClassRoomType.*;
 
 @Slf4j
 @SpringBootTest(
@@ -78,71 +83,172 @@ public class AbstractTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
     @Autowired
     protected HotelMapper hotelMapper;
 
+    @PersistenceContext
+    protected EntityManager entityManager;
+
     @BeforeEach
     protected void setUp() {
-       createHotel();
-       createRoom();
-       createBooking();
+        createCities();
+        List<City> cities = cityRepository.findAll();
+        hotelRepository.saveAllAndFlush(new ArrayList<>(List.of(createHotel1(cities),
+                createHotel2(cities),
+                createHotel3(cities))));
+
     }
 
-    @SneakyThrows
-    private void createHotel(){
-        log.info("Creating Hotel");
-        String jsonHotel = new String(Files.readAllBytes(new File("src/test/resources/hotel/hotel.json").toPath()));
-        HotelRequest hotelRequest = objectMapper.readValue(jsonHotel, HotelRequest.class);
-        Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
-        cityRepository.save(hotel.getCity());
-        hotelRepository.saveAndFlush(hotel);
-
-        String jsonHotel2 = new String(Files.readAllBytes(new File("src/test/resources/hotel/hotel2.json").toPath()));
-        HotelRequest hotelRequest2 = objectMapper.readValue(jsonHotel2, HotelRequest.class);
-        Hotel hotel2 = hotelMapper.mappingHotelRequestToHotel(hotelRequest2);
-        cityRepository.save(hotel2.getCity());
-        hotelRepository.saveAndFlush(hotel2);
-        log.info("Hotel created");
+    private void createCities() {
+        cityRepository.saveAllAndFlush(new ArrayList<>(List.of(City
+                        .builder()
+                        .name("Москва")
+                        .build(),
+                City
+                        .builder()
+                        .name("Тула")
+                        .build(),
+                City
+                        .builder()
+                        .name("Пермь")
+                        .build())));
     }
 
-    @SneakyThrows
-    private void createRoom(){
-        log.info("Creating Room");
-        List<RoomRequest> roomRequest = objectMapper.readValue(new File("src/test/resources/room/room.json"),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, RoomRequest.class));
-        List<Hotel> hotels = hotelRepository.findAll();
-        List<Room> rooms = new ArrayList<>();
-        int i = 0;
-        while (i < hotels.size()) {
-            Hotel hotel = hotels.get(i++);
-            rooms = roomRequest.stream().map(r -> {
-                Room room = roomMapper.roomResponseToRoom(r);
-                room.setHotel(hotel);
-                return room;
-            }).toList();
-        }
-        roomRepository.saveAllAndFlush(rooms);
-        log.info("Room created");
+
+    private Hotel createHotel1(List<City> cities) {
+        Hotel hotel = new Hotel();
+        hotel.setName("Hotel Москва");
+        hotel.setPhotos(photos());
+        hotel.setCity(cities.stream().filter(c -> c.getName().equals("Москва")).findFirst().orElseThrow());
+
+        List<Room> rooms = new ArrayList<>(List.of(
+                Room.builder()
+                        .photoList(photos())
+                        .coast(10000.0)
+                        .classRoomType(BUSINESS)
+                        .description("The best room")
+                        .numberApart(1L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(100000.0)
+                        .classRoomType(LUX)
+                        .description("The best room")
+                        .numberApart(2L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(8000.0)
+                        .classRoomType(STANDARD)
+                        .description("The best room")
+                        .numberApart(3L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(1000.0)
+                        .classRoomType(ECONOMY)
+                        .description("The best room")
+                        .numberApart(4L)
+                        .build()
+        ));
+
+        hotel.setRoomList(rooms);
+        return hotel;
     }
 
-    @SneakyThrows
-    private void createBooking(){
-        log.info("Creating Booking");
-        List<RoomRequest> hotelRequestsBooking = objectMapper.readValue(new File("src/test/resources/booking/booking.json"),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, RoomRequest.class));
-        List<Room> roomList = roomRepository.findAll();
-        List<Booking> bookings = new ArrayList<>();
-        int i = 0;
-        while (i < roomList.size()) {
-            Room room = roomList.get(i++);
-            bookings = hotelRequestsBooking.stream().map(r -> Booking.builder()
-                            .startReserved(r.getRoomBooking().getStartReserved())
-                            .endReserved(r.getRoomBooking().getEndReserved())
-                            .room(room)
-                            .build())
-                    .toList();
-        }
-        bookingRepository.saveAllAndFlush(bookings);
-        log.info("Booking created");
+    private Hotel createHotel2(List<City> cities) {
+        Hotel hotel = new Hotel();
+        hotel.setName("Hotel Тула");
+        hotel.setPhotos(photos());
+        hotel.setCity(cities.stream().filter(c -> c.getName().equals("Тула")).findFirst().orElseThrow());
+
+        List<Room> rooms = new ArrayList<>(List.of(
+                Room.builder()
+                        .photoList(photos())
+                        .coast(10000.0)
+                        .classRoomType(BUSINESS)
+                        .description("The best room")
+                        .numberApart(1L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(100000.0)
+                        .classRoomType(LUX)
+                        .description("The best room")
+                        .numberApart(2L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(8000.0)
+                        .classRoomType(STANDARD)
+                        .description("The best room")
+                        .numberApart(3L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(1000.0)
+                        .classRoomType(ECONOMY)
+                        .description("The best room")
+                        .numberApart(4L)
+                        .build()
+        ));
+
+        hotel.setRoomList(rooms);
+        return hotel;
+    }
+
+    private Hotel createHotel3(List<City> cities) {
+        Hotel hotel = new Hotel();
+        hotel.setName("Hotel Пермь");
+        hotel.setPhotos(photos());
+        hotel.setCity(cities.stream().filter(c -> c.getName().equals("Пермь")).findFirst().orElseThrow());
+
+        List<Room> rooms = new ArrayList<>(List.of(
+                Room.builder()
+                        .photoList(photos())
+                        .coast(10000.0)
+                        .classRoomType(BUSINESS)
+                        .description("The best room")
+                        .numberApart(1L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(100000.0)
+                        .classRoomType(LUX)
+                        .description("The best room")
+                        .numberApart(2L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(8000.0)
+                        .classRoomType(STANDARD)
+                        .description("The best room")
+                        .numberApart(3L)
+                        .build(),
+                Room.builder()
+                        .photoList(photos())
+                        .coast(1000.0)
+                        .classRoomType(ECONOMY)
+                        .description("The best room")
+                        .numberApart(4L)
+                        .build()
+        ));
+
+        hotel.setRoomList(rooms);
+        return hotel;
+    }
+
+    private List<Photo> photos() {
+        return new ArrayList<>(List.of(Photo.builder()
+                        .photo("TEST_PHOTO")
+                        .build(),
+                Photo.builder()
+                        .photo("TEST_PHOTO")
+                        .build()
+                ,
+                Photo.builder()
+                        .photo("TEST_PHOTO")
+                        .build()));
     }
 }
