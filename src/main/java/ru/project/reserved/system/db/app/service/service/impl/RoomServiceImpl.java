@@ -53,14 +53,14 @@ public class RoomServiceImpl implements RoomService {
                     NonUniqueResultException.class,
                     CannotCreateTransactionException.class}
     )
+    @Transactional
     public RoomResponse createRoom(RoomRequest roomRequest) {
         log.info("Create room");
         Hotel hotel = hotelRepository.findById(roomRequest.getHotelId()).
                 orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRequest.getHotelId() + " not found"));
         Room newRoom = roomMapper.roomResponseToRoom(roomRequest);
         newRoom.setHotel(hotel);
-        Room room = roomRepository.save(newRoom);
-        hotelRepository.save(hotel);
+        Room room = roomRepository.saveAndFlush(newRoom);
         log.info("Room save successful");
         return roomMapper.roomToRoomResponse(room);
     }

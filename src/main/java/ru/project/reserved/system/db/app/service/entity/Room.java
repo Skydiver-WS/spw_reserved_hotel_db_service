@@ -39,7 +39,4 @@ public class Room {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "room")
     private List<Booking> bookings;
-
-
-
 }

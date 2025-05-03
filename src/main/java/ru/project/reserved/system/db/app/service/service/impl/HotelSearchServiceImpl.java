@@ -59,10 +59,9 @@ public class HotelSearchServiceImpl implements HotelSearchService {
                 .findRoomsIdsByRoomIdInAndDateNotOverlapping(rooms.stream().map(l -> l[0]).toList(),
                         request.getHotelSearch().getStartReserved(),
                         request.getHotelSearch().getEndReserved());
-        rooms.removeIf(r -> !bookingIds.isEmpty() && bookingIds.contains(r[0]));
+        rooms.removeIf(r -> !bookingIds.contains(r[0]));
         List<Long> hotelIds = rooms.stream().map(r -> r[1]).toList();
         hotels.removeIf(h -> !hotelIds.contains(h.getId()));
-        log.info("Sorted by date");
     }
 
     private void findAndSortByDistance(List<Hotel> hotels, HotelRequest request) {

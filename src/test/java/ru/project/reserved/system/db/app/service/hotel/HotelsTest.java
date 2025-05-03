@@ -11,6 +11,8 @@ import ru.project.reserved.system.db.app.service.entity.Hotel;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -58,8 +60,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .build())
                 .build();
         List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
@@ -71,9 +81,13 @@ public class HotelsTest extends AbstractTest {
     public void searchHotelByBookingDateNoRoomsTest() {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
-                        .city("Москва")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .city("Тула")
+                        .startReserved(new Date())
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(5)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .build())
                 .build();
         List<HotelResponse> response = hotelService.getAllHotelsByParams(request);;
@@ -86,8 +100,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .rating(2.0)
                         .build())
                 .build();
@@ -102,8 +124,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .rating(7.0)
                         .build())
                 .build();
@@ -117,8 +147,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .distance(20.0)
                         .build())
                 .build();
@@ -133,8 +171,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .distance(10.0)
                         .build())
                 .build();
@@ -148,8 +194,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .coastMin(2000L)
                         .coastMax(10000L)
                         .build())
@@ -181,8 +235,16 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .rating(2.0)
                         .distance(20.0)
                         .coastMin(2000L)
@@ -200,8 +262,12 @@ public class HotelsTest extends AbstractTest {
         HotelRequest request = HotelRequest.builder()
                 .hotelSearch(HotelRequest.HotelSearchRequest.builder()
                         .city("Тула")
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date())
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(5)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .rating(5.0)
                         .distance(10.0)
                         .coastMin(20000L)

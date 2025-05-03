@@ -10,10 +10,9 @@ import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 import ru.project.reserved.system.db.app.service.entity.Room;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 public class RoomsTest extends AbstractTest {
 
@@ -87,8 +86,16 @@ public class RoomsTest extends AbstractTest {
                 .roomSearch(RoomRequest.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
                         .hotelName(hotel.getName())
-                        .startReserved(new Date(17434656000000L))
-                        .endReserved(new Date(17438112000000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .build())
                 .build();
         List<RoomResponse> response = roomService.findRoomsForParameters(request);
@@ -102,12 +109,68 @@ public class RoomsTest extends AbstractTest {
                 .roomSearch(RoomRequest.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
                         .hotelName(hotel.getName())
-                        .startReserved(new Date(1743465600000L))
-                        .endReserved(new Date(1743811200000L))
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(1)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(4)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
                         .build())
                 .build();
         List<RoomResponse> response = roomService.findRoomsForParameters(request);
-        Assertions.assertTrue(response.isEmpty());
+        Assertions.assertFalse(response.getFirst().getErrorMessage().isEmpty());
+    }
+
+    @Test
+    public void searchRoomByClassRoomTest(){
+        Hotel hotel = hotelRepository.findHotelsByCity_Name("Тула").getFirst();
+        RoomRequest request = RoomRequest.builder()
+                .roomSearch(RoomRequest.RoomSearchRequest.builder()
+                        .hotelId(hotel.getId())
+                        .hotelName(hotel.getName())
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .classRoomType(ClassRoomType.STANDARD)
+                        .build())
+                .build();
+        List<RoomResponse> response = roomService.findRoomsForParameters(request);
+        Assertions.assertEquals(3, response.size());
+    }
+
+    @Test
+    public void searchRoomByCoastTest(){
+        Hotel hotel = hotelRepository.findHotelsByCity_Name("Тула").getFirst();
+        RoomRequest request = RoomRequest.builder()
+                .roomSearch(RoomRequest.RoomSearchRequest.builder()
+                        .hotelId(hotel.getId())
+                        .hotelName(hotel.getName())
+                        .startReserved(new Date(LocalDateTime.now()
+                                .plusDays(10)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .endReserved(new Date(LocalDateTime.now()
+                                .plusDays(15)
+                                .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
+                                .toInstant()
+                                .toEpochMilli()))
+                        .coast(2000.0)
+                        .build())
+                .build();
+        List<RoomResponse> response = roomService.findRoomsForParameters(request);
+        Assertions.assertEquals(3, response.size());
     }
 
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.NonUniqueResultException;
+import org.hibernate.PersistentObjectException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.retry.annotation.Backoff;
@@ -59,10 +60,12 @@ public class HotelServiceImpl implements HotelService {
     @SneakyThrows
     @SearchEntity
     @Retryable(
-            retryFor = {IncorrectResultSizeDataAccessException.class, DataAccessException.class, IOException.class},
+            retryFor = {IncorrectResultSizeDataAccessException.class, DataAccessException.class, IOException.class,
+            PersistentObjectException.class},
             maxAttempts = 10,
             backoff = @Backoff(delay = 500, multiplier = 2)
     )
+    @Transactional
     public HotelResponse createHotel(HotelRequest hotelRequest) {
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
         log.info("Create hotel {}", hotel.getName());
@@ -73,7 +76,7 @@ public class HotelServiceImpl implements HotelService {
         }
         city.ifPresent(hotel::setCity);
         log.info("Attempt save hotel {}", hotel.getName());
-        Hotel newHotel = hotelRepository.save(hotel);
+        Hotel newHotel = hotelRepository.saveAndFlush(hotel);
         log.info("Hotel: {} save successful", newHotel.getName());
         return hotelMapper.mappingHotelToHotelRequest(newHotel);
     }
