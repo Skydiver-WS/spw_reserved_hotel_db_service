@@ -93,6 +93,8 @@ public class AbstractTest {
     @PersistenceContext
     protected EntityManager entityManager;
 
+    protected List<Booking> bookings = new ArrayList<>();
+
     @BeforeEach
     protected void setUp() {
         createCities();
@@ -103,6 +105,7 @@ public class AbstractTest {
         hotelRepository.saveAllAndFlush(hotels);
         createRooms();
         createBookings();
+        bookings.addAll(bookingRepository.findAll());
     }
 
     private void createCities() {

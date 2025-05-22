@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.entity.Booking;
@@ -16,6 +17,7 @@ import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.BookingService;
 import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -45,12 +47,13 @@ public class BookingServiceImpl implements BookingService {
         booking.setRoom(room);
         booking.setStartReserved(roomRequest.getRoomBooking().getStartReserved());
         booking.setEndReserved(roomRequest.getRoomBooking().getEndReserved());
-        room.setBookings(List.of(booking));
+        room.setBookings(new ArrayList<>(List.of(booking)));
         Room roomReserved = roomRepository.save(room);
         return roomMapper.roomToRoomResponse(roomReserved);
     }
 
     @Override
+    @Transactional
     public RoomResponse updateBookingRoom(RoomRequest roomRequest) {
         Optional<Booking> bookingOptional = bookingRepository.findById(roomRequest.getRoomBooking().getBookingId());
         if (bookingOptional.isEmpty()) {
@@ -69,8 +72,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public RoomResponse deleteBookingRoom(RoomRequest roomRequest) {
         bookingRepository.deleteBookingById(roomRequest.getRoomBooking().getBookingId());
+        bookingRepository.flush();
 
         if (bookingRepository.existsBookingById(roomRequest.getRoomBooking().getBookingId())) {
             throw new BookingException("Booking not remove");

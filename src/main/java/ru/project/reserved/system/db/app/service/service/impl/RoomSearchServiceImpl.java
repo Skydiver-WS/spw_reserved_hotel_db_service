@@ -30,6 +30,7 @@ public class RoomSearchServiceImpl implements RoomSearchService {
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
     private final BookingRepository bookingRepository;
+    private static final double EPSILON = 1e-10;
 
     @Override
     public List<Room> searchRoomByParameter(RoomRequest roomRequest) {
@@ -83,7 +84,7 @@ public class RoomSearchServiceImpl implements RoomSearchService {
     }
 
     private void filterByCoast(List<Long> roomIds, Double coast) {
-        if (Objects.nonNull(coast)) {
+        if (Objects.nonNull(coast) && !coast.equals(0d) && Math.abs(coast) > EPSILON) {
             List<Long> roomIdsByCoast = roomRepository.findIdsRoomsByCoast(coast);
             roomIds.removeIf(r -> !roomIdsByCoast.contains(r));
         }
