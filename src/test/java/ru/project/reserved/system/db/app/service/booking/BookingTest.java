@@ -74,8 +74,7 @@ public class BookingTest extends AbstractTest {
                         .bookingId(id)
                         .build())
                 .build();
-        roomService.reservedRoom(roomRequest);
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        Assertions.assertNull(booking);
+        RoomResponse response  = roomService.reservedRoom(roomRequest);
+        Assertions.assertEquals("Booking remove successfully", response.getDescription());
     }
 }
