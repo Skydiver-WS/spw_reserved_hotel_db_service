@@ -1,64 +1,68 @@
 server:
   port: 8081
+  servlet:
+    context-path: "/booking-app"
 spring:
+  profiles:
+    active: @spring.profiles.active@
   task:
     scheduling:
       pool:
         size: 2
 
-  kafka:
-    bootstrap-servers: 127.0.0.1:9093 # Укажите адрес вашего сервера Kafka
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      topic:
-        topicList:
-          - hotel-response
-          - room-response
-          - create-hotel
-          - update-hotel
-          - find-all-hotel
-          - find-by-parameter-hotel
-          - remove-hotel
-          - create-room
-          - update-room
-          - find-all-room
-          - find-by-parameter-room
-          - remove-room
-          - reserved-room
-
-    consumer:
-      group-id: data-base # Группа потребителей
-      auto-offset-reset: earliest # Начинать с самого раннего смещения, если смещение не найдено
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      topic:
-        topicList :
-          - create-hotel
-          - update-hotel
-          - find-all-hotel
-          - find-by-parameter-hotel
-          - remove-hotel
-          - create-room
-          - update-room
-          - find-all-room
-          - find-by-parameter-room
-          - remove-room
-          - reserved-room
-        kafkaMessageGroupId: "data-base"
-        typeKey:
-          - create-hotel
-          - update-hotel
-          - delete-hotel
-          - read-hotel
-          - create-room
-          - update-room
-          - delete-room
-          - read-room
+#  kafka:
+#    bootstrap-servers: 127.0.0.1:9093 # Укажите адрес вашего сервера Kafka
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      topic:
+#        topicList:
+#          - hotel-response
+#          - room-response
+#          - create-hotel
+#          - update-hotel
+#          - find-all-hotel
+#          - find-by-parameter-hotel
+#          - remove-hotel
+#          - create-room
+#          - update-room
+#          - find-all-room
+#          - find-by-parameter-room
+#          - remove-room
+#          - reserved-room
+#
+#    consumer:
+#      group-id: data-base # Группа потребителей
+#      auto-offset-reset: earliest # Начинать с самого раннего смещения, если смещение не найдено
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      topic:
+#        topicList :
+#          - create-hotel
+#          - update-hotel
+#          - find-all-hotel
+#          - find-by-parameter-hotel
+#          - remove-hotel
+#          - create-room
+#          - update-room
+#          - find-all-room
+#          - find-by-parameter-room
+#          - remove-room
+#          - reserved-room
+#        kafkaMessageGroupId: "data-base"
+#        typeKey:
+#          - create-hotel
+#          - update-hotel
+#          - delete-hotel
+#          - read-hotel
+#          - create-room
+#          - update-room
+#          - delete-room
+#          - read-room
 
   jpa:
-    show-sql: false
-    generate-ddl: true
+    show-sql: true
+    generate-ddl: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -68,16 +72,31 @@ spring:
   datasource:
 #    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
 #    url: jdbc:postgresql://192.168.31.196:5432/hotel_db
-    url: jdbc:postgresql://127.0.0.1:5432/hotel_db
+    url: jdbc:postgresql://127.0.0.1:5432/hotel_db?currentSchema=hotel
     username: postgres
     password: postgres
     hikari:
-      schema: hotel
-      connection-init-sql: CREATE SCHEMA IF NOT EXISTS hotel
       connection-timeout: 500000
       maximum-pool-size: 10000
       idle-timeout: 600000             # 1 минута
       max-lifetime: 3000000
+  liquibase:
+    enabled: true
+    change-log: classpath:/changelog.yml
+    user: postgres
+    password: postgres
+    url: jdbc:postgresql://127.0.0.1:5432/hotel_db?currentSchema=hotel
+    default-schema: hotel
+    liquibase-schema: hotel
+    parameters:
+      defaultSchemaName: hotel
+
+  sql:
+    init:
+      mode: never
+      data-locations: classpath:data.sql
+
 scheduler:
   start-task: "0 */30 * * * *"
+
 

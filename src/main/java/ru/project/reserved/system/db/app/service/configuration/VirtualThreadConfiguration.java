@@ -18,6 +18,7 @@ import java.util.concurrent.Semaphore;
 @Configuration
 @EnableAsync
 @Slf4j
+@Profile("virtual-thread")
 public class VirtualThreadConfiguration  {
     @Bean
     public Semaphore semaphore() {

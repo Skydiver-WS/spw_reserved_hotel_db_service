@@ -3,29 +3,17 @@ package ru.project.reserved.system.db.app.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.SneakyThrows;
+
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 import ru.project.reserved.system.db.app.service.entity.*;
-import ru.project.reserved.system.db.app.service.listener.Listener;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.BookingRepository;
@@ -35,15 +23,11 @@ import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static ru.project.reserved.system.db.app.service.dto.type.ClassRoomType.*;
 
@@ -56,12 +40,6 @@ import static ru.project.reserved.system.db.app.service.dto.type.ClassRoomType.*
 @ExtendWith(SpringExtension.class)
 @Transactional
 public class AbstractTest {
-
-    @MockitoBean
-    protected Listener listener;
-
-    @MockitoBean
-    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     protected HotelRepository hotelRepository;
