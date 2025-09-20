@@ -21,7 +21,7 @@ spring:
   datasource:
 #    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
 #    url: jdbc:postgresql://192.168.31.196:5432/hotel_db
-    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=hotel
+    url: jdbc:postgresql://127.0.0.1:5432/hotel_db?currentSchema=hotel
     username: postgres
     password: postgres
     hikari:
