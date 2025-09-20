@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
@@ -27,17 +28,17 @@ public class HotelController {
     }
 
     @PostMapping
-    public ResponseEntity<HotelResponse> createHotel(@RequestBody HotelRequest hotelRequest){
+    public ResponseEntity<HotelResponse> createHotel(@Validated @RequestBody HotelRequest hotelRequest){
         return ResponseEntity.ok(hotelService.createHotel(hotelRequest));
     }
 
     @PutMapping
-    public ResponseEntity<HotelResponse> updateHotel(@RequestBody HotelRequest hotelRequest){
+    public ResponseEntity<HotelResponse> updateHotel(@Validated @RequestBody HotelRequest hotelRequest){
         return ResponseEntity.ok(hotelService.updateHotel(hotelRequest));
     }
 
     @DeleteMapping
-    public ResponseEntity<HotelResponse> deleteHotel(@RequestBody HotelRequest hotelRequest){
+    public ResponseEntity<HotelResponse> deleteHotel(@Validated @RequestBody HotelRequest hotelRequest){
         return ResponseEntity.ok(hotelService.deleteHotel(hotelRequest));
     }
 

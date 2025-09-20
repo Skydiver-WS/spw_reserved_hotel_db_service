@@ -19,7 +19,7 @@ public class Booking {
     @Id
     @GeneratedValue
     private UUID id;
-
+    private UUID userId;
     private Date startReserved;
     private Date endReserved;
     private Date created = new Date();

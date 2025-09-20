@@ -8,6 +8,7 @@ import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,6 +18,8 @@ import java.util.List;
 public class HotelRequest {
 
     private Long id;
+    @NotNull
+    private UUID userId;
     private String name;
     private String description;
     private String address;

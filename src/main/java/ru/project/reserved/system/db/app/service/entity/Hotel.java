@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -19,6 +20,8 @@ public class Hotel {
 
     @Version
     private Long version;
+
+    private UUID userId;
 
     private String name;
 
