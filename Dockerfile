@@ -3,7 +3,9 @@ LABEL authors="Aleksandr"
 
 WORKDIR /app
 
-COPY target/db_app_service-${VERSION}.jar app.jar
+
+ARG APP_VERSION
+COPY target/db_app_service-${APP_VERSION}.jar app.jar
 
 # Открываем порт, который использует ваше приложение
 EXPOSE 8080
