@@ -3,9 +3,7 @@ LABEL authors="Aleksandr"
 
 WORKDIR /app
 
-# Используем ARG для передачи версии при сборке
-ARG VERSION=1.1.2
-COPY target/db_app_service-${VERSION}.jar app.jar
+COPY target/db_app_service-*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
