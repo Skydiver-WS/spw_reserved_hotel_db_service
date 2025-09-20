@@ -3,9 +3,6 @@ on:
   push:
     branches:
       - master
-#    pull_request:
-#      branches:
-#        - master
 
 jobs:
   build:
@@ -21,6 +18,13 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
+
+      - name: Extract version from pom.xml
+        id: version
+        run: |
+            VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+            echo "PROJECT_VERSION=$VERSION" >> $GITHUB_ENV
+            echo "Extracted version: $VERSION"
 
       # Шаг 3: Сборка и тестирование проекта с помощью Maven
       - name: Build with Maven
@@ -39,8 +43,3 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           docker push skydiverkhv/db_service:v${{ env.PROJECT_VERSION }}
-
-#      - name: Pull and start Docker container the local
-#        run: |
-#          docker push skydiverkhv/db_service:latest
-#          docker run -d -p 8080:8080 skydiverkhv/db_service:latest
