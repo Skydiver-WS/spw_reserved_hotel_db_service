@@ -31,7 +31,7 @@ spring:
       idle-timeout: 600000             # 1 минута
       max-lifetime: 3000000
   liquibase:
-    enabled: false
+    enabled: true
     change-log: classpath:/changelog.yml
     user: postgres
     password: postgres
