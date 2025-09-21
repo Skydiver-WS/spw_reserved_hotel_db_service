@@ -9,10 +9,6 @@ echo "Using version: $VERSION"
 docker rm -f db_service || true
 
 # Запускаем новый контейнер
-docker run -d \
-  --name db_service \
-  --network your_network_name \
-  -p 8081:8081 \
-  skydiverkhv/db_service:"$VERSION"
+docker run -d -p 8081:8081 --name bokking-db-app skydiverkhv/db_service:"$VERSION"
 
 echo "Container db_service started with version $VERSION"
