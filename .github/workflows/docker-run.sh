@@ -12,7 +12,7 @@ docker rm -f db_service || true
 docker run -d \
   --name db_service \
   --network your_network_name \
-  -p 8080:8080 \
+  -p 8080:8081 \
   skydiverkhv/db_service:"$VERSION"
 
 echo "Container db_service started with version $VERSION"
