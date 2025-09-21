@@ -1,10 +1,5 @@
 version: '3.8'
 
-# Определяем пользовательскую сеть
-networks:
-  hotel-network:
-    driver: bridge
-    external: true
 
 services:
   postgres:
@@ -22,5 +17,10 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge
+
 volumes:
   postgres-data:
