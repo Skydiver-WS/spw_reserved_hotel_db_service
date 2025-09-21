@@ -22,7 +22,7 @@ spring:
 #    url: jdbc:postgresql://172.30.38.105:5432/hotel_db
 #    url: jdbc:postgresql://192.168.31.196:5432/hotel_db
     # url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=hotel
-    url: jdbc:postgresql://db_hotel-network:5432/hotel_db?currentSchema=hotel
+    url: jdbc:postgresql://172.20.0.2:5432/hotel_db?currentSchema=hotel
     username: postgres
     password: postgres
     hikari:
@@ -31,7 +31,7 @@ spring:
       idle-timeout: 600000             # 1 минута
       max-lifetime: 3000000
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:/changelog.yml
     user: postgres
     password: postgres
