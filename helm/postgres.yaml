@@ -24,9 +24,29 @@ spec:
               value: "postgres"
             - name: POSTGRES_DB
               value: "hotel_db"
+            # Увеличиваем максимальное количество подключений
+            - name: POSTGRES_MAX_CONNECTIONS
+              value: "200"
+            # Оптимизация производительности
+            - name: POSTGRES_SHARED_BUFFERS
+              value: "256MB"
+            - name: POSTGRES_EFFECTIVE_CACHE_SIZE
+              value: "1GB"
+            - name: POSTGRES_MAX_PARALLEL_WORKERS
+              value: "4"
+            # Таймауты для очистки зависших подключений
+            - name: POSTGRES_IDLE_IN_TRANSACTION_SESSION_TIMEOUT
+              value: "60000"  # 60 секунд
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
