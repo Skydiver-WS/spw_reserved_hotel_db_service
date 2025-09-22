@@ -13,10 +13,10 @@ spring:
     username: postgres
     password: postgres
     hikari:
-      connection-timeout: 500000
-      maximum-pool-size: 10000
+      connection-timeout: 50000
+      maximum-pool-size: 100
       idle-timeout: 600000             # 1 минута
-      max-lifetime: 3000000
+      max-lifetime: 30000
   liquibase:
     enabled: true
     change-log: classpath:/changelog.yml
