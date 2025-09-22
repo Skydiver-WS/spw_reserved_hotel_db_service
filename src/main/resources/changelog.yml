@@ -291,7 +291,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_id
-                  type: UUID
+                  type: VARCHAR(255)
                   constraints:
                     nullable: true
         - addColumn:
@@ -299,7 +299,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_id
-                  type: UUID
+                  type: VARCHAR(255)
                   constraints:
                     nullable: true
 
