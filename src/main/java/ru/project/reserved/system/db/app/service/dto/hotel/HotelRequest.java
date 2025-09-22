@@ -19,7 +19,7 @@ public class HotelRequest {
 
     private Long id;
     @NotNull
-    private UUID userId;
+    private String userId;
     private String name;
     private String description;
     private String address;

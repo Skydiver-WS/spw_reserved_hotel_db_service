@@ -21,7 +21,7 @@ public class Hotel {
     @Version
     private Long version;
 
-    private UUID userId;
+    private String userId;
 
     private String name;
 
