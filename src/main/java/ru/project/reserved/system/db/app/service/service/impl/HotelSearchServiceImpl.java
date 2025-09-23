@@ -7,19 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
-import ru.project.reserved.system.db.app.service.dto.type.SortType;
-import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.BookingRepository;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
-import ru.project.reserved.system.db.app.service.service.BookingService;
 import ru.project.reserved.system.db.app.service.service.HotelSearchService;
-import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +30,7 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     @Override
     public List<HotelResponse> searchHotels(@Validated HotelRequest request) {
-        List<Hotel> hotels = hotelRepository.findHotelsByCity_Name(request.getHotelSearch().getCity());
+        List<Hotel> hotels = hotelRepository.findHotelsByCity(request.getHotelSearch().getCity());
         findAndSortByName(hotels, request);
         findAndSortByDate(hotels, request);
         findAndSortByDistance(hotels, request);

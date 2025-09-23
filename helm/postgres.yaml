@@ -97,3 +97,5 @@ spec:
 #
 #  # Пример:
 #  kubectl delete deployment hotel-app
+
+#  kubectl delete pvc postgres-pvc

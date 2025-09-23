@@ -6,9 +6,9 @@ import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import java.util.List;
 
 public interface RoomService {
-    List<RoomResponse> findAllRooms();
+    RoomResponse findAllRooms();
     RoomResponse createRoom(RoomRequest room);
-    List<RoomResponse> findRoomsForParameters(RoomRequest request);
+    RoomResponse findRoomsForParameters(RoomRequest request);
     RoomResponse updateRoom(RoomRequest room);
     RoomResponse removeRoom(Long hotelId, Long roomId);
 

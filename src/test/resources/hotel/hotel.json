@@ -18,10 +18,5 @@
       "photo": "SRTHDRTHTYJGFBNFSJFHSRHGVHDSJDFHCVDTTJ"
     }
   ],
-  "city": {
-    "name": "Москва",
-    "address": {
-      "address": "Los Angeles City Center"
-    }
-  }
+  "city": "Москва"
 }

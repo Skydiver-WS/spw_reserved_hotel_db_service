@@ -18,10 +18,5 @@
       "photo": "SRTHDRTHTYJGFBNFSJFHSRHGVHDSJDFHCVDTTJ"
     }
   ],
-  "city": {
-    "name": "Рамен",
-    "address": {
-      "address": "Los Angeles City Center"
-    }
-  }
+  "city": "Рамен"
 }

@@ -81,7 +81,7 @@ public class RoomsTest extends AbstractTest {
 
     @Test
     public void searchRoomTest() {
-        Hotel hotel = hotelRepository.findHotelsByCity_Name("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
         RoomRequest request = RoomRequest.builder()
                 .roomSearch(RoomRequest.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -98,13 +98,13 @@ public class RoomsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        List<RoomResponse> response = roomService.findRoomsForParameters(request);
-        Assertions.assertFalse(response.isEmpty());
+        RoomResponse response = roomService.findRoomsForParameters(request);
+        Assertions.assertFalse(response.getRooms().isEmpty());
     }
 
     @Test
     public void searchNoRoomTest() {
-        Hotel hotel = hotelRepository.findHotelsByCity_Name("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
         RoomRequest request = RoomRequest.builder()
                 .roomSearch(RoomRequest.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -121,13 +121,13 @@ public class RoomsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        List<RoomResponse> response = roomService.findRoomsForParameters(request);
-        Assertions.assertFalse(response.getFirst().getErrorMessage().isEmpty());
+        RoomResponse response = roomService.findRoomsForParameters(request);
+        Assertions.assertFalse(response.getRooms().getFirst().getErrorMessage().isEmpty());
     }
 
     @Test
     public void searchRoomByClassRoomTest(){
-        Hotel hotel = hotelRepository.findHotelsByCity_Name("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
         RoomRequest request = RoomRequest.builder()
                 .roomSearch(RoomRequest.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -145,13 +145,13 @@ public class RoomsTest extends AbstractTest {
                         .classRoomType(ClassRoomType.STANDARD)
                         .build())
                 .build();
-        List<RoomResponse> response = roomService.findRoomsForParameters(request);
-        Assertions.assertEquals(3, response.size());
+        RoomResponse response = roomService.findRoomsForParameters(request);
+        Assertions.assertEquals(3, response.getRooms().size());
     }
 
     @Test
     public void searchRoomByCoastTest(){
-        Hotel hotel = hotelRepository.findHotelsByCity_Name("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
         RoomRequest request = RoomRequest.builder()
                 .roomSearch(RoomRequest.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -169,8 +169,8 @@ public class RoomsTest extends AbstractTest {
                         .coast(2000.0)
                         .build())
                 .build();
-        List<RoomResponse> response = roomService.findRoomsForParameters(request);
-        Assertions.assertEquals(3, response.size());
+        RoomResponse response = roomService.findRoomsForParameters(request);
+        Assertions.assertEquals(3, response.getRooms().size());
     }
 
 }

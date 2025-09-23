@@ -13,6 +13,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "city", "address"})
+})
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -33,12 +36,10 @@ public class Hotel {
 
     private Double rating;
 
+    private String city;
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer countApart = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id", nullable = false)
-    private City city;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "hotel",
             fetch = FetchType.LAZY,

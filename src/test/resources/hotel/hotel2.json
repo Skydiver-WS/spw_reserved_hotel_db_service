@@ -18,10 +18,5 @@
       "photo": "SRTHDRTHTYJGFBNFSJFHSRHGVHDSJDFHCVDTTJ"
     }
   ],
-  "city": {
-    "name": "Тула",
-    "address": {
-      "address": "Los Angeles City Center"
-    }
-  }
+  "city": "Тула"
 }

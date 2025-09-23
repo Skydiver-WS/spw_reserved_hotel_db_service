@@ -38,9 +38,11 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public List<RoomResponse> findAllRooms() {
+    public RoomResponse findAllRooms() {
         log.info("Find all rooms");
-        return roomMapper.roomsToRoomResponses(roomRepository.findAll());
+        return RoomResponse.builder()
+                .rooms(roomMapper.roomsToRoomResponses(roomRepository.findAll()))
+                .build();
     }
 
     @Override
@@ -66,12 +68,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomResponse> findRoomsForParameters(RoomRequest request) {
+    public RoomResponse findRoomsForParameters(RoomRequest request) {
         log.info("Find rooms for parameters");
         List<Room> roomResponses = searchService.searchRoomByParameter(request);
-        return roomResponses.isEmpty() ? List.of(RoomResponse.builder()
-                .errorMessage("Rooms not found")
-                .build()) : roomMapper.roomsToRoomResponses(roomResponses);
+        return RoomResponse.builder()
+                .rooms(roomResponses.isEmpty() ? List.of(RoomResponse.builder()
+                        .errorMessage("Rooms not found")
+                        .build()) : roomMapper.roomsToRoomResponses(roomResponses))
+                .build();
     }
 
     @Override

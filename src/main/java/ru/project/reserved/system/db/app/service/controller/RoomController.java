@@ -17,7 +17,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping
-    public ResponseEntity<List<RoomResponse>> findAllRooms() {
+    public ResponseEntity<RoomResponse> findAllRooms() {
         return ResponseEntity.ok(roomService.findAllRooms());
     }
 
@@ -27,7 +27,7 @@ public class RoomController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<RoomResponse>> findRooms(@RequestBody @Valid RoomRequest roomRequest) {
+    public ResponseEntity<RoomResponse> findRooms(@RequestBody @Valid RoomRequest roomRequest) {
         return ResponseEntity.ok(roomService.findRoomsForParameters(roomRequest));
     }
 

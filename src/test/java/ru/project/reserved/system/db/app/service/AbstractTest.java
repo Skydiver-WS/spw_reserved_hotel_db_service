@@ -17,7 +17,6 @@ import ru.project.reserved.system.db.app.service.entity.*;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.BookingRepository;
-import ru.project.reserved.system.db.app.service.repository.CityRepository;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.HotelService;
@@ -51,9 +50,6 @@ public class AbstractTest {
     protected BookingRepository bookingRepository;
 
     @Autowired
-    protected CityRepository cityRepository;
-
-    @Autowired
     protected HotelService hotelService;
 
     @Autowired
@@ -75,58 +71,41 @@ public class AbstractTest {
 
     @BeforeEach
     protected void setUp() {
-        createCities();
-        List<City> cities = cityRepository.findAll();
-        List<Hotel> hotels = (new ArrayList<>(List.of(createHotel1(cities),
-                createHotel2(cities),
-                createHotel3(cities))));
+        List<Hotel> hotels = (new ArrayList<>(List.of(createHotel1(),
+                createHotel2(),
+                createHotel3())));
         hotelRepository.saveAllAndFlush(hotels);
         createRooms();
         createBookings();
         bookings.addAll(bookingRepository.findAll());
     }
 
-    private void createCities() {
-        cityRepository.saveAllAndFlush(new ArrayList<>(List.of(City
-                        .builder()
-                        .name("Москва")
-                        .build(),
-                City
-                        .builder()
-                        .name("Тула")
-                        .build(),
-                City
-                        .builder()
-                        .name("Пермь")
-                        .build())));
-    }
 
-
-    private Hotel createHotel1(List<City> cities) {
+    private Hotel createHotel1() {
         Hotel hotel = new Hotel();
         hotel.setName("Hotel Москва");
         hotel.setPhotos(photos());
-        hotel.setCity(cities.stream().filter(c -> c.getName().equals("Москва")).findFirst().orElseThrow());
+        hotel.setCity("Москва");
         hotel.setRating(7.4);
         hotel.setDistance(4.8);
         return hotel;
     }
 
-    private Hotel createHotel2(List<City> cities) {
+    private Hotel createHotel2() {
         Hotel hotel = new Hotel();
         hotel.setName("Hotel Тула");
         hotel.setPhotos(photos());
-        hotel.setCity(cities.stream().filter(c -> c.getName().equals("Тула")).findFirst().orElseThrow());
+        hotel.setCity("Тула");
         hotel.setRating(2.0);
         hotel.setDistance(15.0);
         return hotel;
     }
 
-    private Hotel createHotel3(List<City> cities) {
+    private Hotel createHotel3() {
         Hotel hotel = new Hotel();
         hotel.setName("Hotel Пермь");
         hotel.setPhotos(photos());
-        hotel.setCity(cities.stream().filter(c -> c.getName().equals("Пермь")).findFirst().orElseThrow());
+        hotel.setCity("Пермь");
         hotel.setRating(3.2);
         hotel.setDistance(4.5);
         return hotel;

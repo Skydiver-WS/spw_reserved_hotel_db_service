@@ -6,8 +6,8 @@ import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
 import java.util.List;
 
 public interface HotelService {
-    List<HotelResponse> getAllHotels();
-    List<HotelResponse> getAllHotelsByParams(HotelRequest searchRequestRequest);
+    HotelResponse getAllHotels();
+    HotelResponse getAllHotelsByParams(HotelRequest searchRequestRequest);
     HotelResponse createHotel(HotelRequest hotelRequest);
     HotelResponse updateHotel(HotelRequest hotelRequest);
     HotelResponse deleteHotel(HotelRequest hotelRequest);

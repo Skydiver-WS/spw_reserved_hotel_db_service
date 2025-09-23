@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
-import ru.project.reserved.system.db.app.service.dto.city.CityResponse;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.List;
@@ -18,6 +16,7 @@ public class HotelResponse {
     private Long id;
     private String name;
     private String description;
+    private String city;
     private String address;
     private Double distance;
     private Double minCoast;
@@ -27,4 +26,5 @@ public class HotelResponse {
     private List<Photo> photos;
     private String errorMessage;
     private String message;
+    private List<HotelResponse> hotels;
 }

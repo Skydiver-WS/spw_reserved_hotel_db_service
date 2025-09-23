@@ -2,13 +2,11 @@ package ru.project.reserved.system.db.app.service.dto.hotel;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import ru.project.reserved.system.db.app.service.dto.city.CityRequest;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -26,7 +24,7 @@ public class HotelRequest {
     private Double distance;
     private Double rating;
     private List<Photo> photos;
-    private CityRequest city;
+    private String city;
     private HotelSearchRequest hotelSearch;
 
     @Data

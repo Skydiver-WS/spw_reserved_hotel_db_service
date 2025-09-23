@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 public class HotelsTest extends AbstractTest {
 
@@ -72,9 +71,9 @@ public class HotelsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("Hotel Тула", response.getFirst().getName());
+        Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
     @Test
     @Order(5)
@@ -90,8 +89,8 @@ public class HotelsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);;
-        Assertions.assertEquals(0, response.size());
+        HotelResponse response = hotelService.getAllHotelsByParams(request);;
+        Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
@@ -113,9 +112,9 @@ public class HotelsTest extends AbstractTest {
                         .rating(2.0)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("Hotel Тула", response.getFirst().getName());
+        Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
 
     @Test
@@ -137,8 +136,8 @@ public class HotelsTest extends AbstractTest {
                         .rating(7.0)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
-        Assertions.assertEquals(0, response.size());
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
@@ -160,9 +159,9 @@ public class HotelsTest extends AbstractTest {
                         .distance(20.0)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("Hotel Тула", response.getFirst().getName());
+        Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
 
     @Test
@@ -184,8 +183,8 @@ public class HotelsTest extends AbstractTest {
                         .distance(10.0)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
-        Assertions.assertEquals(0, response.size());
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
@@ -208,9 +207,9 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(10000L)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("Hotel Тула", response.getFirst().getName());
+        Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
 
     @Test
@@ -225,8 +224,8 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(1000000L)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
-        Assertions.assertEquals(0, response.size());
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
@@ -251,9 +250,9 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(10000L)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("Hotel Тула", response.getFirst().getName());
+        Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
 
     @Test
@@ -274,8 +273,8 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(100000L)
                         .build())
                 .build();
-        List<HotelResponse> response = hotelService.getAllHotelsByParams(request);
-        Assertions.assertEquals(0, response.size());
+        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        Assertions.assertEquals(0, response.getHotels().size());
     }
 
 }

@@ -3,18 +3,16 @@ package ru.project.reserved.system.db.app.service.mapper;
 import org.mapstruct.*;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
-import ru.project.reserved.system.db.app.service.entity.City;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
 
 import java.util.Comparator;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {RoomMapper.class, CityMapper.class, PhotoMapper.class })
+@Mapper(componentModel = "spring", uses = {RoomMapper.class, PhotoMapper.class })
 public interface HotelMapper {
 
     @Mapping(target = "countApart", expression = "java(0)")
-    //@Mapping(target = "cityList", source = "city.name", qualifiedByName = "setCities")
     Hotel mappingHotelRequestToHotel(HotelRequest hotelRequest);
 
     List<HotelResponse> mappingHotelListToHotelResponseList(List<Hotel> hotelList);
@@ -42,13 +40,6 @@ public interface HotelMapper {
                 .min(Comparator.comparingDouble(Room::getCoast))
                 .map(Room::getCoast)
                 .orElse(0.0);
-    }
-
-    @Named("setCities")
-    default List<City> setCities(String city) {
-        return List.of(City.builder()
-                .name(city)
-                .build());
     }
 
     @AfterMapping

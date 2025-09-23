@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.project.reserved.system.db.app.service.dto.city.CityRequest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
@@ -22,5 +21,4 @@ public class SearchRequest {
     private SortType sortType;
     private List<HotelRequest> hotelRequestList;
     private List<RoomRequest> roomRequestList;
-    private List<CityRequest> cityRequestList;
 }
