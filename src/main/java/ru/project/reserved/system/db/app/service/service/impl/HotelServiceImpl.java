@@ -59,8 +59,8 @@ public class HotelServiceImpl implements HotelService {
     @Retryable(
             retryFor = {IncorrectResultSizeDataAccessException.class, DataAccessException.class, IOException.class,
             PersistentObjectException.class},
-            maxAttempts = 10,
-            backoff = @Backoff(delay = 500, multiplier = 2)
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 500, multiplier = 1)
     )
     @Transactional
     public HotelResponse createHotel(HotelRequest hotelRequest) {

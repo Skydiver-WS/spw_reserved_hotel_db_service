@@ -16,9 +16,11 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-       List<Room> findRoomsByHotel(Hotel hotel);
+    List<Room> findRoomsByHotel(Hotel hotel);
 
     boolean existsRoomByHotelIdAndId(Long hotelId, Long roomId);
+
+    Optional<Room> findRoomByIdAndHotel_Id(Long roomId, Long hotelId);
 
     @Query("SELECT r.id, r.hotel.id FROM Room r WHERE r.hotel.id IN :hotelIds")
     List<Long[]> findRoomIdsByHotelIdIn(@Param("hotelIds") List<Long> hotelIds);

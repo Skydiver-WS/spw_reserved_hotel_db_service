@@ -21,7 +21,7 @@ public class RoomController {
         return ResponseEntity.ok(roomService.findAllRooms());
     }
 
-    @PutMapping("/booking")
+    @PostMapping("/booking")
     public ResponseEntity<RoomResponse> bookingOperation(@RequestBody @Valid RoomRequest roomRequest) {
         return ResponseEntity.ok(roomService.reservedRoom(roomRequest));
     }
@@ -42,7 +42,7 @@ public class RoomController {
     }
 
     @DeleteMapping
-    public ResponseEntity<RoomResponse> deleteRoom(@RequestParam Long hotelId, @RequestParam Long roomId) {
-        return ResponseEntity.ok(roomService.removeRoom(hotelId, roomId));
+    public ResponseEntity<RoomResponse> deleteRoom(@RequestBody @Valid RoomRequest roomRequest) {
+        return ResponseEntity.ok(roomService.removeRoom(roomRequest));
     }
 }

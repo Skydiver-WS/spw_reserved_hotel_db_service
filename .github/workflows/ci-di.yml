@@ -27,8 +27,11 @@ jobs:
             echo "Extracted version: $VERSION"
 
       # Шаг 3: Сборка и тестирование проекта с помощью Maven
+      - name: Run tests
+        run: mvn clean test
+
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn -DskipTests clean package
 
       - name: Log into Docker Hub
         uses: docker/login-action@v2

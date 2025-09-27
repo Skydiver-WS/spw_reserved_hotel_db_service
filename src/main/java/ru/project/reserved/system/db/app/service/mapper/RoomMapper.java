@@ -19,6 +19,8 @@ public interface RoomMapper {
     List<RoomResponse> roomsToRoomResponses(List<Room> rooms);
 
     Room roomResponseToRoom(RoomRequest room);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateRoom(@MappingTarget Room room, RoomRequest roomRequest);
 
     @Named("setIdBooking")

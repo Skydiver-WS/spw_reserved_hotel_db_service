@@ -45,7 +45,7 @@ spring:
       data-locations: classpath:data.sql
 
 scheduler:
-  start-task: "0 */30 * * * *"
+  start-task: "0 */5 * * * *"
 logging:
   level:
     liquibase: info

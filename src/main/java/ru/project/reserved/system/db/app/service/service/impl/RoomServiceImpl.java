@@ -80,7 +80,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomResponse updateRoom(RoomRequest roomRequest) {
-        Optional<Room> findRoom = roomRepository.findById(roomRequest.getId());
+        Optional<Room> findRoom = roomRepository.findRoomByIdAndHotel_Id(roomRequest.getId(), roomRequest.getHotelId());
         if (findRoom.isPresent()) {
             log.info("Update room");
             roomMapper.updateRoom(findRoom.get(), roomRequest);
@@ -93,17 +93,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse removeRoom(Long hotelId, Long roomId) {
-        if (roomRepository.existsRoomByHotelIdAndId(hotelId, roomId)) {
-            roomRepository.deleteByHotelIdAndRoomId(hotelId, roomId);
+    public RoomResponse removeRoom(RoomRequest request) {
+        if (roomRepository.existsRoomByHotelIdAndId(request.getHotelId(), request.getId())) {
+            roomRepository.deleteByHotelIdAndRoomId(request.getHotelId(), request.getId());
             log.info("Remove room");
             return RoomResponse.builder()
-                    .id(roomId)
+                    .id( request.getId())
                     .description("Room delete")
                     .build();
         }
         return RoomResponse.builder()
-                .errorMessage("Room " + roomId + " not found")
+                .errorMessage("Room " +  request.getId() + " not found")
                 .build();
     }
 

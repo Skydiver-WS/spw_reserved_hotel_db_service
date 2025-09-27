@@ -72,7 +72,11 @@ public class RoomsTest extends AbstractTest {
                 break;
             }
         }
-        roomService.removeRoom(hotel.getId(), room.getId());
+        var rq = RoomRequest.builder()
+                .id(room.getId())
+                .hotelId(hotel.getId())
+                .build();
+        roomService.removeRoom(rq);
         entityManager.clear();
         entityManager.flush();
         Optional<Room> roomOptional = roomRepository.findById(room.getId());
