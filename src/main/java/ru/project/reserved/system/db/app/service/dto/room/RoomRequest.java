@@ -29,6 +29,8 @@ public class    RoomRequest {
 
     private Long numberApart;
 
+    private String userId;
+
     private String description;
 
     private StatusType statusType;

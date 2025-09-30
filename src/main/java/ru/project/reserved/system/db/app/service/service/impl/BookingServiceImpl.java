@@ -11,6 +11,7 @@ import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
 import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.exception.BookingException;
+import ru.project.reserved.system.db.app.service.mapper.BookingMapper;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.BookingRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
@@ -31,6 +32,7 @@ public class BookingServiceImpl implements BookingService {
     private final RoomMapper roomMapper;
     private final BookingRepository bookingRepository;
     private final ObjectMapper objectMapper;
+    private final BookingMapper bookingMapper;
 
     @Override
     @SneakyThrows
@@ -43,10 +45,7 @@ public class BookingServiceImpl implements BookingService {
         Random random = new Random();
         Room room = roomResponses.size() == 1 ? roomResponses.getFirst()
                 : roomResponses.get(random.nextInt(roomResponses.size()));
-        Booking booking = new Booking();
-        booking.setRoom(room);
-        booking.setStartReserved(roomRequest.getRoomBooking().getStartReserved());
-        booking.setEndReserved(roomRequest.getRoomBooking().getEndReserved());
+        Booking booking = bookingMapper.bookingFromRoomRequest(roomRequest, room);
         room.setBookings(new ArrayList<>(List.of(booking)));
         Room roomReserved = roomRepository.save(room);
         return roomMapper.roomToRoomResponse(roomReserved);

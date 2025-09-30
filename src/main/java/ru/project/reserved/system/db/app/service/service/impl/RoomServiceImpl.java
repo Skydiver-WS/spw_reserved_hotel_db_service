@@ -60,8 +60,7 @@ public class RoomServiceImpl implements RoomService {
         log.info("Create room");
         Hotel hotel = hotelRepository.findById(roomRequest.getHotelId()).
                 orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRequest.getHotelId() + " not found"));
-        Room newRoom = roomMapper.roomResponseToRoom(roomRequest);
-        newRoom.setHotel(hotel);
+        Room newRoom = roomMapper.roomResponseToRoom(roomRequest, hotel);
         Room room = roomRepository.saveAndFlush(newRoom);
         log.info("Room save successful");
         return roomMapper.roomToRoomResponse(room);

@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"numberApart", "hotel"})
+})
+@Data
+@Builder
 public class Room {
 
     @Id
