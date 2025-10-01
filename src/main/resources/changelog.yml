@@ -244,4 +244,54 @@ databaseChangeLog:
             constraintName: number_hotel
             tableName: room
             columnNames: number_apart, hotel_id
+  - changeSet:
+      id: 3
+      author: Администратор (generated)
+      changes:
+        - createTable:
+            tableName: comment
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: VARCHAR(255)
+              - column:
+                  name: comment
+                  type: TEXT
+              - column:
+                  name: estimation
+                  type: DOUBLE
+              - column:
+                  name: created
+                  type: TIMESTAMP
+              - column:
+                  name: hotel_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_comment_hotel
+                    references: hotel(id)
+        - createTable:
+            tableName: comment_photos
+            columns:
+              - column:
+                  name: comment_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_comment_photos_comment
+                    references: comment(id)
+              - column:
+                  name: photos_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_comment_photos_photo
+                    references: photo(id)
+                    unique: true
 

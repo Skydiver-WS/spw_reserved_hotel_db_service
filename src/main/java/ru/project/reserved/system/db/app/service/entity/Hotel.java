@@ -49,4 +49,7 @@ public class Hotel {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Photo> photos;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
 }
