@@ -4,11 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.service.RoomService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/room")
@@ -17,32 +15,32 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping
-    public ResponseEntity<RoomResponse> findAllRooms() {
+    public ResponseEntity<RoomRs> findAllRooms() {
         return ResponseEntity.ok(roomService.findAllRooms());
     }
 
     @PostMapping("/booking")
-    public ResponseEntity<RoomResponse> bookingOperation(@RequestBody @Valid RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomService.reservedRoom(roomRequest));
+    public ResponseEntity<RoomRs> bookingOperation(@RequestBody @Valid RoomRq roomRq) {
+        return ResponseEntity.ok(roomService.reservedRoom(roomRq));
     }
 
     @PostMapping("/search")
-    public ResponseEntity<RoomResponse> findRooms(@RequestBody @Valid RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomService.findRoomsForParameters(roomRequest));
+    public ResponseEntity<RoomRs> findRooms(@RequestBody @Valid RoomRq roomRq) {
+        return ResponseEntity.ok(roomService.findRoomsForParameters(roomRq));
     }
 
     @PostMapping
-    public ResponseEntity<RoomResponse> createRoom(@RequestBody @Valid RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomService.createRoom(roomRequest));
+    public ResponseEntity<RoomRs> createRoom(@RequestBody @Valid RoomRq roomRq) {
+        return ResponseEntity.ok(roomService.createRoom(roomRq));
     }
 
     @PutMapping
-    public ResponseEntity<RoomResponse> updateRoom(@RequestBody @Valid RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomService.updateRoom(roomRequest));
+    public ResponseEntity<RoomRs> updateRoom(@RequestBody @Valid RoomRq roomRq) {
+        return ResponseEntity.ok(roomService.updateRoom(roomRq));
     }
 
     @DeleteMapping
-    public ResponseEntity<RoomResponse> deleteRoom(@RequestBody @Valid RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomService.removeRoom(roomRequest));
+    public ResponseEntity<RoomRs> deleteRoom(@RequestBody @Valid RoomRq roomRq) {
+        return ResponseEntity.ok(roomService.removeRoom(roomRq));
     }
 }

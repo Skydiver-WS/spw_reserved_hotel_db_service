@@ -1,18 +1,14 @@
 package ru.project.reserved.system.db.app.service.service;
 
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
-
-import java.util.List;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 
 public interface RoomService {
-    RoomResponse findAllRooms();
-    RoomResponse createRoom(RoomRequest room);
-    RoomResponse findRoomsForParameters(RoomRequest request);
-    RoomResponse updateRoom(RoomRequest room);
-    RoomResponse removeRoom(RoomRequest roomRequest);
+    RoomRs findAllRooms();
+    RoomRs createRoom(RoomRq room);
+    RoomRs findRoomsForParameters(RoomRq request);
+    RoomRs updateRoom(RoomRq room);
+    RoomRs removeRoom(RoomRq roomRq);
 
-    RoomResponse reservedRoom(RoomRequest roomRequest);
+    RoomRs reservedRoom(RoomRq roomRq);
 }

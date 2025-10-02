@@ -2,7 +2,7 @@ package ru.project.reserved.system.db.app.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Room;
 
@@ -14,5 +14,5 @@ public interface BookingMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "room", source = "room")
     @Mapping(target = "created", expression = "java(new java.util.Date())")
-    Booking bookingFromRoomRequest(RoomRequest request, Room room);
+    Booking bookingFromRoomRequest(RoomRq request, Room room);
 }

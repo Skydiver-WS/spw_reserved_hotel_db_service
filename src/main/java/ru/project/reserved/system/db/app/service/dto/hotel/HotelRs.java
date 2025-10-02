@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class HotelResponse {
+public class HotelRs {
     private Long id;
     private String name;
     private String description;
@@ -26,5 +26,5 @@ public class HotelResponse {
     private List<Photo> photos;
     private String errorMessage;
     private String message;
-    private List<HotelResponse> hotels;
+    private List<HotelRs> hotels;
 }

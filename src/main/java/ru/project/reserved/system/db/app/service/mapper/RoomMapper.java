@@ -1,8 +1,8 @@
 package ru.project.reserved.system.db.app.service.mapper;
 
 import org.mapstruct.*;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
@@ -17,18 +17,18 @@ public interface RoomMapper {
 
     @Mapping(source = "bookings", target = "bookingId", qualifiedByName = "setIdBooking",
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    RoomResponse roomToRoomResponse(Room room);
+    RoomRs roomToRoomResponse(Room room);
 
-    List<RoomResponse> roomsToRoomResponses(List<Room> rooms);
+    List<RoomRs> roomsToRoomResponses(List<Room> rooms);
 
     @Mapping(target = "numberApart", source = "roomRq.numberApart", qualifiedByName = "numberApart")
     @Mapping(target = "hotel", source = "hotel")
     @Mapping(target = "id", source = "roomRq.id")
     @Mapping(target = "description", source = "roomRq.description")
-    Room roomResponseToRoom(RoomRequest roomRq, Hotel hotel);
+    Room roomResponseToRoom(RoomRq roomRq, Hotel hotel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateRoom(@MappingTarget Room room, RoomRequest roomRequest);
+    void updateRoom(@MappingTarget Room room, RoomRq roomRq);
 
     @Named("setIdBooking")
     default UUID setIdBooking(List<Booking> bookings) {

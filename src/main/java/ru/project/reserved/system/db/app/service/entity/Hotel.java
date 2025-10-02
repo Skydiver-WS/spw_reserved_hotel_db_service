@@ -36,6 +36,8 @@ public class Hotel {
 
     private Double rating;
 
+    private Long countComments;
+
     private String city;
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer countApart = 0;

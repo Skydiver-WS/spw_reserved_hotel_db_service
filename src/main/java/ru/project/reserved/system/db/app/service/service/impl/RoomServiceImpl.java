@@ -11,8 +11,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.annotation.Transactional;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
@@ -38,9 +38,9 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public RoomResponse findAllRooms() {
+    public RoomRs findAllRooms() {
         log.info("Find all rooms");
-        return RoomResponse.builder()
+        return RoomRs.builder()
                 .rooms(roomMapper.roomsToRoomResponses(roomRepository.findAll()))
                 .build();
     }
@@ -56,71 +56,71 @@ public class RoomServiceImpl implements RoomService {
                     CannotCreateTransactionException.class}
     )
     @Transactional
-    public RoomResponse createRoom(RoomRequest roomRequest) {
+    public RoomRs createRoom(RoomRq roomRq) {
         log.info("Create room");
-        Hotel hotel = hotelRepository.findById(roomRequest.getHotelId()).
-                orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRequest.getHotelId() + " not found"));
-        Room newRoom = roomMapper.roomResponseToRoom(roomRequest, hotel);
+        Hotel hotel = hotelRepository.findById(roomRq.getHotelId()).
+                orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRq.getHotelId() + " not found"));
+        Room newRoom = roomMapper.roomResponseToRoom(roomRq, hotel);
         Room room = roomRepository.saveAndFlush(newRoom);
         log.info("Room save successful");
         return roomMapper.roomToRoomResponse(room);
     }
 
     @Override
-    public RoomResponse findRoomsForParameters(RoomRequest request) {
+    public RoomRs findRoomsForParameters(RoomRq request) {
         log.info("Find rooms for parameters");
         List<Room> roomResponses = searchService.searchRoomByParameter(request);
-        return RoomResponse.builder()
-                .rooms(roomResponses.isEmpty() ? List.of(RoomResponse.builder()
+        return RoomRs.builder()
+                .rooms(roomResponses.isEmpty() ? List.of(RoomRs.builder()
                         .errorMessage("Rooms not found")
                         .build()) : roomMapper.roomsToRoomResponses(roomResponses))
                 .build();
     }
 
     @Override
-    public RoomResponse updateRoom(RoomRequest roomRequest) {
-        Optional<Room> findRoom = roomRepository.findRoomByIdAndHotel_Id(roomRequest.getId(), roomRequest.getHotelId());
+    public RoomRs updateRoom(RoomRq roomRq) {
+        Optional<Room> findRoom = roomRepository.findRoomByIdAndHotel_Id(roomRq.getId(), roomRq.getHotelId());
         if (findRoom.isPresent()) {
             log.info("Update room");
-            roomMapper.updateRoom(findRoom.get(), roomRequest);
+            roomMapper.updateRoom(findRoom.get(), roomRq);
             Room newRoom = roomRepository.save(findRoom.get());
             return roomMapper.roomToRoomResponse(newRoom);
         }
-        return RoomResponse.builder()
+        return RoomRs.builder()
                 .errorMessage("Room not found")
                 .build();
     }
 
     @Override
-    public RoomResponse removeRoom(RoomRequest request) {
+    public RoomRs removeRoom(RoomRq request) {
         if (roomRepository.existsRoomByHotelIdAndId(request.getHotelId(), request.getId())) {
             roomRepository.deleteByHotelIdAndRoomId(request.getHotelId(), request.getId());
             log.info("Remove room");
-            return RoomResponse.builder()
+            return RoomRs.builder()
                     .id( request.getId())
                     .description("Room delete")
                     .build();
         }
-        return RoomResponse.builder()
+        return RoomRs.builder()
                 .errorMessage("Room " +  request.getId() + " not found")
                 .build();
     }
 
     @Override
-    public RoomResponse reservedRoom(RoomRequest roomRequest) {
+    public RoomRs reservedRoom(RoomRq roomRq) {
         try {
-            if (BookingOperationType.UPDATE.equals(roomRequest.getRoomBooking().getOperationType())) {
-                return bookingService.updateBookingRoom(roomRequest);
+            if (BookingOperationType.UPDATE.equals(roomRq.getRoomBooking().getOperationType())) {
+                return bookingService.updateBookingRoom(roomRq);
             }
-            if (BookingOperationType.DELETE.equals(roomRequest.getRoomBooking().getOperationType())) {
-                return bookingService.deleteBookingRoom(roomRequest);
+            if (BookingOperationType.DELETE.equals(roomRq.getRoomBooking().getOperationType())) {
+                return bookingService.deleteBookingRoom(roomRq);
             }
-            return bookingService.createBookingRoom(roomRequest);
+            return bookingService.createBookingRoom(roomRq);
         } catch (Exception e) {
             log.error(e.getMessage());
-            return RoomResponse.builder()
+            return RoomRs.builder()
                     .errorMessage(e.getMessage())
-                    .classRoomType(roomRequest.getClassRoomType())
+                    .classRoomType(roomRq.getClassRoomType())
                     .build();
         }
     }

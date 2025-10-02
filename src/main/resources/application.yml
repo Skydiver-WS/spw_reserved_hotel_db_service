@@ -45,7 +45,8 @@ spring:
       data-locations: classpath:data.sql
 
 scheduler:
-  start-task: "0 */5 * * * *"
+  count-apart: "0 */5 * * * *"
+  rating: "0 */5 * * * *"
 logging:
   level:
     liquibase: info

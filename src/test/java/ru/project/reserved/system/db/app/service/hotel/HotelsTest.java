@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import ru.project.reserved.system.db.app.service.AbstractTest;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 
 import java.io.File;
@@ -22,8 +22,8 @@ public class HotelsTest extends AbstractTest {
     @Order(1)
     public void createHotelTest() {
         String jsonHotel = new String(Files.readAllBytes(new File("src/test/resources/hotel/hotelTest.json").toPath()));
-        HotelRequest hotelRequest = objectMapper.readValue(jsonHotel, HotelRequest.class);
-        HotelResponse response = hotelService.createHotel(hotelRequest);
+        HotelRq hotelRq = objectMapper.readValue(jsonHotel, HotelRq.class);
+        HotelRs response = hotelService.createHotel(hotelRq);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Рамен", response.getName());
         Assertions.assertEquals("123 Beach Avenue", response.getAddress());
@@ -33,11 +33,11 @@ public class HotelsTest extends AbstractTest {
     @Order(2)
     public void updateHotelTest() {
         Hotel hotel = hotelRepository.findAll().getFirst();
-        HotelRequest hotelRequest = HotelRequest.builder()
+        HotelRq hotelRq = HotelRq.builder()
                 .id(hotel.getId())
                 .name("Hotel Atas")
                 .build();
-        HotelResponse response = hotelService.updateHotel(hotelRequest);
+        HotelRs response = hotelService.updateHotel(hotelRq);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Atas", response.getName());
     }
@@ -46,18 +46,18 @@ public class HotelsTest extends AbstractTest {
     @Order(3)
     public void deleteHotelTest() {
         Hotel hotel = hotelRepository.findAll().getFirst();
-        HotelRequest hotelRequest = HotelRequest.builder()
+        HotelRq hotelRq = HotelRq.builder()
                 .id(hotel.getId())
                 .build();
-        HotelResponse response = hotelService.deleteHotel(hotelRequest);
+        HotelRs response = hotelService.deleteHotel(hotelRq);
         Assertions.assertEquals("Hotel with id "  + hotel.getId()  + " delete", response.getMessage());
     }
 
     @Test
     @Order(4)
     public void searchHotelByBookingDateRoomsTest() {
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -71,15 +71,15 @@ public class HotelsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
     @Test
     @Order(5)
     public void searchHotelByBookingDateNoRoomsTest() {
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date())
                         .endReserved(new Date(LocalDateTime.now()
@@ -89,15 +89,15 @@ public class HotelsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);;
+        HotelRs response = hotelService.getAllHotelsByParams(request);;
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
     @Order(6)
     public void searchHotelByRatingTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -112,7 +112,7 @@ public class HotelsTest extends AbstractTest {
                         .rating(2.0)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -120,8 +120,8 @@ public class HotelsTest extends AbstractTest {
     @Test
     @Order(7)
     public void searchHotelByRatingNoHotelTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -136,15 +136,15 @@ public class HotelsTest extends AbstractTest {
                         .rating(7.0)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
     @Order(8)
     public void searchHotelByDistanceTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -159,7 +159,7 @@ public class HotelsTest extends AbstractTest {
                         .distance(20.0)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -167,8 +167,8 @@ public class HotelsTest extends AbstractTest {
     @Test
     @Order(9)
     public void searchHotelByDistanceNoHotelTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -183,15 +183,15 @@ public class HotelsTest extends AbstractTest {
                         .distance(10.0)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
     @Order(10)
     public void searchHotelByCoastTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -207,7 +207,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(10000L)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -215,8 +215,8 @@ public class HotelsTest extends AbstractTest {
     @Test
     @Order(11)
     public void searchHotelByCoastNoHotelTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(1743465600000L))
                         .endReserved(new Date(1743811200000L))
@@ -224,15 +224,15 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(1000000L)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
     @Test
     @Order(12)
     public void searchHotelTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
@@ -250,7 +250,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(10000L)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -258,8 +258,8 @@ public class HotelsTest extends AbstractTest {
     @Test
     @Order(13)
     public void searchHotelNoHotelTest(){
-        HotelRequest request = HotelRequest.builder()
-                .hotelSearch(HotelRequest.HotelSearchRequest.builder()
+        HotelRq request = HotelRq.builder()
+                .hotelSearch(HotelRq.HotelSearchRequest.builder()
                         .city("Тула")
                         .startReserved(new Date())
                         .endReserved(new Date(LocalDateTime.now()
@@ -273,7 +273,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(100000L)
                         .build())
                 .build();
-        HotelResponse response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request);
         Assertions.assertEquals(0, response.getHotels().size());
     }
 

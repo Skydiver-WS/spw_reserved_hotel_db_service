@@ -1,7 +1,6 @@
 package ru.project.reserved.system.db.app.service.dto.room;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sun.jdi.ClassType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
@@ -9,7 +8,6 @@ import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
 import ru.project.reserved.system.db.app.service.dto.type.StatusType;
 import ru.project.reserved.system.db.app.service.entity.Photo;
-import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class    RoomRequest {
+public class RoomRq {
 
     private Long id;
 

@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HotelRequest {
+public class HotelRq {
 
     private Long id;
     @NotNull

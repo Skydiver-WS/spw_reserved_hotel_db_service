@@ -10,8 +10,8 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
@@ -32,24 +32,24 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @SneakyThrows
-    public HotelResponse getAllHotels() {
+    public HotelRs getAllHotels() {
         log.info("Get all hotels");
         try {
-            return HotelResponse.builder()
+            return HotelRs.builder()
                     .hotels(hotelMapper.mappingHotelListToHotelResponseList(hotelRepository.findAll()))
                     .build();
         } catch (Exception e) {
             log.error(e.getMessage());
-            return HotelResponse.builder()
+            return HotelRs.builder()
                     .errorMessage(e.getMessage())
                     .build();
         }
     }
 
     @Override
-    public HotelResponse getAllHotelsByParams(HotelRequest request) {
+    public HotelRs getAllHotelsByParams(HotelRq request) {
         log.info("Get hotels by params");
-        return HotelResponse.builder()
+        return HotelRs.builder()
                 .hotels(hotelSearchService.searchHotels(request))
                 .build();
     }
@@ -63,30 +63,30 @@ public class HotelServiceImpl implements HotelService {
             backoff = @Backoff(delay = 500, multiplier = 1)
     )
     @Transactional
-    public HotelResponse createHotel(HotelRequest hotelRequest) {
-        log.info("Create hotel {}", hotelRequest.getName());
-        Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRequest);
+    public HotelRs createHotel(HotelRq hotelRq) {
+        log.info("Create hotel {}", hotelRq.getName());
+        Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRq);
         Hotel newHotel = hotelRepository.saveAndFlush(hotel);
         log.info("Hotel: {} save successful", newHotel.getName());
         return hotelMapper.mappingHotelToHotelRequest(newHotel);
     }
 
     @Override
-    public HotelResponse updateHotel(HotelRequest hotelRequest) {
+    public HotelRs updateHotel(HotelRq hotelRq) {
         log.info("Update hotel");
-        Optional<Hotel> hotelOptional = hotelRepository.findById(hotelRequest.getId());
+        Optional<Hotel> hotelOptional = hotelRepository.findById(hotelRq.getId());
         if (hotelOptional.isEmpty()) {
-            return HotelResponse.builder()
-                    .id(hotelRequest.getId())
-                    .errorMessage("Hotel with id " + hotelRequest.getId() + " not found")
+            return HotelRs.builder()
+                    .id(hotelRq.getId())
+                    .errorMessage("Hotel with id " + hotelRq.getId() + " not found")
                     .build();
         }
         Hotel hotel = hotelOptional.get();
-        hotelMapper.updateHotelByHotelRequest(hotel, hotelRequest);
+        hotelMapper.updateHotelByHotelRequest(hotel, hotelRq);
         try {
             Hotel updatedHotel;
-            if (hotelRequest.getPhotos() != null) {
-                hotel.setPhotos(hotelRequest.getPhotos());
+            if (hotelRq.getPhotos() != null) {
+                hotel.setPhotos(hotelRq.getPhotos());
             } else {
                 hotel.setPhotos(hotelOptional.get().getPhotos());
             }
@@ -95,8 +95,8 @@ public class HotelServiceImpl implements HotelService {
         } catch (Exception ex) {
             log.error(ex.getMessage());
             ex.printStackTrace();
-            return HotelResponse.builder()
-                    .name(hotelRequest.getName())
+            return HotelRs.builder()
+                    .name(hotelRq.getName())
                     .errorMessage(ex.getMessage())
                     .build();
         }
@@ -104,20 +104,20 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public HotelResponse deleteHotel(HotelRequest hotelRequest) {
+    public HotelRs deleteHotel(HotelRq hotelRq) {
         log.info("Delete hotel");
-        Optional<Hotel> hotel = hotelRepository.findById(hotelRequest.getId());
+        Optional<Hotel> hotel = hotelRepository.findById(hotelRq.getId());
         if (hotel.isEmpty()) {
-            log.info("Hotel with id {} not found", hotelRequest.getId());
-            return HotelResponse.builder()
-                    .id(hotelRequest.getId())
-                    .errorMessage("Hotel with id " + hotelRequest.getId() + " not found")
+            log.info("Hotel with id {} not found", hotelRq.getId());
+            return HotelRs.builder()
+                    .id(hotelRq.getId())
+                    .errorMessage("Hotel with id " + hotelRq.getId() + " not found")
                     .build();
         }
-        hotelRepository.deleteById(hotelRequest.getId());
-        return HotelResponse.builder()
-                .id(hotelRequest.getId())
-                .message("Hotel with id " + hotelRequest.getId() + " delete")
+        hotelRepository.deleteById(hotelRq.getId());
+        return HotelRs.builder()
+                .id(hotelRq.getId())
+                .message("Hotel with id " + hotelRq.getId() + " delete")
                 .build();
     }
 }

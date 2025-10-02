@@ -261,7 +261,7 @@ databaseChangeLog:
                   name: user_id
                   type: VARCHAR(255)
               - column:
-                  name: comment
+                  name: message
                   type: TEXT
               - column:
                   name: estimation
@@ -294,4 +294,16 @@ databaseChangeLog:
                     foreignKeyName: fk_comment_photos_photo
                     references: photo(id)
                     unique: true
+  - changeSet:
+      id: 4
+      author: Администратор (generated)
+      changes:
+        - addColumn:
+            tableName: hotel
+            column:
+              name: countComments
+              type: bigint
+              defaultValue: 0
+              constraints:
+                nullable: false
 

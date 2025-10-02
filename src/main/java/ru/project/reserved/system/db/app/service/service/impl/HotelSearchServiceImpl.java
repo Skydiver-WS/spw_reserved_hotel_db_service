@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
@@ -29,7 +29,7 @@ public class HotelSearchServiceImpl implements HotelSearchService {
     private final BookingRepository bookingRepository;
 
     @Override
-    public List<HotelResponse> searchHotels(@Validated HotelRequest request) {
+    public List<HotelRs> searchHotels(@Validated HotelRq request) {
         List<Hotel> hotels = hotelRepository.findHotelsByCity(request.getHotelSearch().getCity());
         findAndSortByName(hotels, request);
         findAndSortByDate(hotels, request);
@@ -40,13 +40,13 @@ public class HotelSearchServiceImpl implements HotelSearchService {
     }
 
 
-    private void findAndSortByName(List<Hotel> hotels, HotelRequest request) {
+    private void findAndSortByName(List<Hotel> hotels, HotelRq request) {
         log.info("Sorted by name");
         hotels.removeIf(h -> Strings.isNotBlank(request.getHotelSearch().getHotelName())
                 && !h.getName().equals(request.getHotelSearch().getHotelName()));
     }
 
-    private void findAndSortByDate(List<Hotel> hotels, HotelRequest request) {
+    private void findAndSortByDate(List<Hotel> hotels, HotelRq request) {
         log.info("Sorted by date");
         List<Long[]> rooms = roomRepository.findRoomIdsByHotelIdIn(hotels.stream().map(Hotel::getId).toList());
         List<Long> bookingIds = bookingRepository
@@ -58,19 +58,19 @@ public class HotelSearchServiceImpl implements HotelSearchService {
         hotels.removeIf(h -> !hotelIds.contains(h.getId()));
     }
 
-    private void findAndSortByDistance(List<Hotel> hotels, HotelRequest request) {
+    private void findAndSortByDistance(List<Hotel> hotels, HotelRq request) {
         log.info("Sorted by distance");
         hotels.removeIf(h -> Objects.nonNull(request.getHotelSearch().getDistance())
                 && h.getDistance() > request.getHotelSearch().getDistance());
     }
 
-    private void findAndSortByRating(List<Hotel> hotels, HotelRequest request) {
+    private void findAndSortByRating(List<Hotel> hotels, HotelRq request) {
         log.info("Sorted by rating");
         hotels.removeIf(h -> Objects.nonNull(request.getHotelSearch().getRating())
                 && h.getRating() < request.getHotelSearch().getRating());
     }
 
-    private void findAndSortByCoast(List<Hotel> hotels, HotelRequest request) {
+    private void findAndSortByCoast(List<Hotel> hotels, HotelRq request) {
         log.info("Sorted by coast");
         Long coastMinL = request.getHotelSearch().getCoastMin();
         Long coastMaxL = request.getHotelSearch().getCoastMax();

@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelRequest;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelResponse;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
+import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.service.HotelService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/hotel")
@@ -18,28 +16,28 @@ public class HotelController {
     private final HotelService hotelService;
 
     @GetMapping
-    public ResponseEntity<HotelResponse> findAllHotels(){
+    public ResponseEntity<HotelRs> findAllHotels(){
         return ResponseEntity.ok(hotelService.getAllHotels());
     }
 
     @PostMapping("/search")
-    public ResponseEntity<HotelResponse> findHotels(@RequestBody HotelRequest hotelRequest){
-        return ResponseEntity.ok(hotelService.getAllHotelsByParams(hotelRequest));
+    public ResponseEntity<HotelRs> findHotels(@RequestBody HotelRq hotelRq){
+        return ResponseEntity.ok(hotelService.getAllHotelsByParams(hotelRq));
     }
 
     @PostMapping
-    public ResponseEntity<HotelResponse> createHotel(@Validated @RequestBody HotelRequest hotelRequest){
-        return ResponseEntity.ok(hotelService.createHotel(hotelRequest));
+    public ResponseEntity<HotelRs> createHotel(@Validated @RequestBody HotelRq hotelRq){
+        return ResponseEntity.ok(hotelService.createHotel(hotelRq));
     }
 
     @PutMapping
-    public ResponseEntity<HotelResponse> updateHotel(@Validated @RequestBody HotelRequest hotelRequest){
-        return ResponseEntity.ok(hotelService.updateHotel(hotelRequest));
+    public ResponseEntity<HotelRs> updateHotel(@Validated @RequestBody HotelRq hotelRq){
+        return ResponseEntity.ok(hotelService.updateHotel(hotelRq));
     }
 
     @DeleteMapping
-    public ResponseEntity<HotelResponse> deleteHotel(@Validated @RequestBody HotelRequest hotelRequest){
-        return ResponseEntity.ok(hotelService.deleteHotel(hotelRequest));
+    public ResponseEntity<HotelRs> deleteHotel(@Validated @RequestBody HotelRq hotelRq){
+        return ResponseEntity.ok(hotelService.deleteHotel(hotelRq));
     }
 
 

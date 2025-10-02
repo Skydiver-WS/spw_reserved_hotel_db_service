@@ -1,24 +1,19 @@
 package ru.project.reserved.system.db.app.service.service.impl;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
-import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.exception.BookingException;
-import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.BookingRepository;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -33,36 +28,36 @@ public class RoomSearchServiceImpl implements RoomSearchService {
     private static final double EPSILON = 1e-10;
 
     @Override
-    public List<Room> searchRoomByParameter(RoomRequest roomRequest) {
+    public List<Room> searchRoomByParameter(RoomRq roomRq) {
         log.info("Search rooms");
-        return findAndFilterRooms(roomRequest);
+        return findAndFilterRooms(roomRq);
     }
 
     @Override
-    public List<Room> searchRoomByParameterForReserved(RoomRequest roomRequest) {
+    public List<Room> searchRoomByParameterForReserved(RoomRq roomRq) {
         log.info("Search rooms by reserved");
-        return findAndFilterRooms(roomRequest);
+        return findAndFilterRooms(roomRq);
     }
 
-    private List<Room> findAndFilterRooms(RoomRequest roomRequest) {
+    private List<Room> findAndFilterRooms(RoomRq roomRq) {
         Long hotelId;
         Date startReserved;
         Date endReserved;
         ClassRoomType classType;
         SortType sortCoast = SortType.ASC;
         Double coast = 0d;
-        if (Objects.nonNull(roomRequest.getRoomSearch())) {
-            hotelId = roomRequest.getRoomSearch().getHotelId();
-            startReserved = roomRequest.getRoomSearch().getStartReserved();
-            endReserved = roomRequest.getRoomSearch().getEndReserved();
-            classType = roomRequest.getRoomSearch().getClassRoomType();
-            sortCoast = roomRequest.getRoomSearch().getSortCoast();
-            coast = roomRequest.getRoomSearch().getCoast();
+        if (Objects.nonNull(roomRq.getRoomSearch())) {
+            hotelId = roomRq.getRoomSearch().getHotelId();
+            startReserved = roomRq.getRoomSearch().getStartReserved();
+            endReserved = roomRq.getRoomSearch().getEndReserved();
+            classType = roomRq.getRoomSearch().getClassRoomType();
+            sortCoast = roomRq.getRoomSearch().getSortCoast();
+            coast = roomRq.getRoomSearch().getCoast();
         } else {
-            hotelId = roomRequest.getRoomBooking().getHotelId();
-            startReserved = roomRequest.getRoomBooking().getStartReserved();
-            endReserved = roomRequest.getRoomBooking().getEndReserved();
-            classType = roomRequest.getRoomBooking().getClassType();
+            hotelId = roomRq.getRoomBooking().getHotelId();
+            startReserved = roomRq.getRoomBooking().getStartReserved();
+            endReserved = roomRq.getRoomBooking().getEndReserved();
+            classType = roomRq.getRoomBooking().getClassType();
             if(startReserved == null || endReserved == null) {
                 log.error("Start date reserved {} or end date reserved {} is null", startReserved, endReserved);
                 throw  new BookingException("Not date reserved");

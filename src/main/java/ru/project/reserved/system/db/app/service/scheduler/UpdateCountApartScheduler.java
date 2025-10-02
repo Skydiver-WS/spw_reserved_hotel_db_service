@@ -22,7 +22,7 @@ public class UpdateCountApartScheduler {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
 
-    @Scheduled(cron = "${scheduler.start-task}")
+    @Scheduled(cron = "${scheduler.count-apart}")
     @Async
     @Transactional
     public void scheduleTaskUpdateCountRoom() {

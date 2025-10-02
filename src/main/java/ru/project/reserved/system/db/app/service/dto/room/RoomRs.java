@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoomResponse {
+public class RoomRs {
     private Long id;
 
     private UUID bookingId;
@@ -31,5 +31,5 @@ public class RoomResponse {
     private List<Photo> photoList;
 
     private String errorMessage;
-    private List<RoomResponse> rooms;
+    private List<RoomRs> rooms;
 }

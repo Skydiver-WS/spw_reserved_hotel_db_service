@@ -3,6 +3,7 @@ package ru.project.reserved.system.db.app.service.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class Comment {
 
     @Id

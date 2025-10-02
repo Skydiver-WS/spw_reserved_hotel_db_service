@@ -3,8 +3,8 @@ package ru.project.reserved.system.db.app.service.booking;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.project.reserved.system.db.app.service.AbstractTest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
 import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Room;
@@ -18,8 +18,8 @@ public class BookingTest extends AbstractTest {
 
     @Test
     public void createBooking() {
-        RoomRequest roomRequest = RoomRequest.builder()
-                .roomBooking(RoomRequest.RoomBooking.builder()
+        RoomRq roomRq = RoomRq.builder()
+                .roomBooking(RoomRq.RoomBooking.builder()
                         .startReserved(new Date())
                         .endReserved(new Date(LocalDateTime.now()
                                 .plusDays(15)
@@ -30,7 +30,7 @@ public class BookingTest extends AbstractTest {
                         .operationType(BookingOperationType.CREATE)
                         .build())
                 .build();
-        RoomResponse response = roomService.reservedRoom(roomRequest);
+        RoomRs response = roomService.reservedRoom(roomRq);
         Booking booking = bookingRepository.findById(response.getBookingId()).orElse(null);
         Assertions.assertNotNull(response);
         Assertions.assertEquals(booking.getId(), response.getBookingId());
@@ -41,8 +41,8 @@ public class BookingTest extends AbstractTest {
         Booking booking = bookings.getFirst();
         Room room = booking.getRoom();
         Long hotelId = room.getHotel().getId();
-        RoomRequest roomRequest = RoomRequest.builder()
-                .roomBooking(RoomRequest.RoomBooking.builder()
+        RoomRq roomRq = RoomRq.builder()
+                .roomBooking(RoomRq.RoomBooking.builder()
                         .startReserved(new Date(LocalDateTime.now()
                                 .plusDays(10)
                                 .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
@@ -59,7 +59,7 @@ public class BookingTest extends AbstractTest {
                         .build())
                 .build();
 
-        RoomResponse response = roomService.reservedRoom(roomRequest);
+        RoomRs response = roomService.reservedRoom(roomRq);
         Booking booking1 = bookingRepository.findById(response.getBookingId()).orElse(null);
         Assertions.assertNotNull(response);
         Assertions.assertEquals(booking1.getId(), response.getBookingId());
@@ -68,13 +68,13 @@ public class BookingTest extends AbstractTest {
     @Test
     public void deleteBooking() {
         UUID id = bookings.getFirst().getId();
-        RoomRequest roomRequest = RoomRequest.builder()
-                .roomBooking(RoomRequest.RoomBooking.builder()
+        RoomRq roomRq = RoomRq.builder()
+                .roomBooking(RoomRq.RoomBooking.builder()
                         .operationType(BookingOperationType.DELETE)
                         .bookingId(id)
                         .build())
                 .build();
-        RoomResponse response  = roomService.reservedRoom(roomRequest);
+        RoomRs response  = roomService.reservedRoom(roomRq);
         Assertions.assertEquals("Booking remove successfully", response.getDescription());
     }
 }

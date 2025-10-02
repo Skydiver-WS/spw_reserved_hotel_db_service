@@ -6,8 +6,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRequest;
-import ru.project.reserved.system.db.app.service.dto.room.RoomResponse;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
+import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.exception.BookingException;
@@ -36,16 +36,16 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @SneakyThrows
-    public RoomResponse createBookingRoom(RoomRequest roomRequest) {
-        List<Room> roomResponses = search.searchRoomByParameterForReserved(roomRequest);
+    public RoomRs createBookingRoom(RoomRq roomRq) {
+        List<Room> roomResponses = search.searchRoomByParameterForReserved(roomRq);
         if (roomResponses.isEmpty()) {
             throw new BookingException("Rooms by request not found. \n" +
-                    "Request: " + objectMapper.writeValueAsString(roomRequest.getRoomBooking()));
+                    "Request: " + objectMapper.writeValueAsString(roomRq.getRoomBooking()));
         }
         Random random = new Random();
         Room room = roomResponses.size() == 1 ? roomResponses.getFirst()
                 : roomResponses.get(random.nextInt(roomResponses.size()));
-        Booking booking = bookingMapper.bookingFromRoomRequest(roomRequest, room);
+        Booking booking = bookingMapper.bookingFromRoomRequest(roomRq, room);
         room.setBookings(new ArrayList<>(List.of(booking)));
         Room roomReserved = roomRepository.save(room);
         return roomMapper.roomToRoomResponse(roomReserved);
@@ -53,18 +53,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public RoomResponse updateBookingRoom(RoomRequest roomRequest) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(roomRequest.getRoomBooking().getBookingId());
+    public RoomRs updateBookingRoom(RoomRq roomRq) {
+        Optional<Booking> bookingOptional = bookingRepository.findById(roomRq.getRoomBooking().getBookingId());
         if (bookingOptional.isEmpty()) {
-            throw new BookingException("Booking with id " + roomRequest.getRoomBooking().getBookingId() + " not found.");
+            throw new BookingException("Booking with id " + roomRq.getRoomBooking().getBookingId() + " not found.");
         }
-        deleteBookingRoom(roomRequest);
+        deleteBookingRoom(roomRq);
         try {
-            return createBookingRoom(roomRequest);
+            return createBookingRoom(roomRq);
         } catch (BookingException e) {
             bookingRepository.save(bookingOptional.get());
-            return RoomResponse.builder()
-                    .bookingId(roomRequest.getRoomBooking().getBookingId())
+            return RoomRs.builder()
+                    .bookingId(roomRq.getRoomBooking().getBookingId())
                     .errorMessage(e.getMessage())
                     .build();
         }
@@ -72,15 +72,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public RoomResponse deleteBookingRoom(RoomRequest roomRequest) {
-        bookingRepository.deleteBookingById(roomRequest.getRoomBooking().getBookingId());
+    public RoomRs deleteBookingRoom(RoomRq roomRq) {
+        bookingRepository.deleteBookingById(roomRq.getRoomBooking().getBookingId());
         bookingRepository.flush();
 
-        if (bookingRepository.existsBookingById(roomRequest.getRoomBooking().getBookingId())) {
+        if (bookingRepository.existsBookingById(roomRq.getRoomBooking().getBookingId())) {
             throw new BookingException("Booking not remove");
         }
-        return RoomResponse.builder()
-                .bookingId(roomRequest.getRoomBooking().getBookingId())
+        return RoomRs.builder()
+                .bookingId(roomRq.getRoomBooking().getBookingId())
                 .description("Booking remove successfully")
                 .build();
     }
