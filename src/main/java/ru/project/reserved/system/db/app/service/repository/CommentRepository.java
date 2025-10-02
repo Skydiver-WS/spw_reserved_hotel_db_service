@@ -14,6 +14,7 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     boolean existsCommentById(UUID id);
 
-    @Query("SELECT c.hotel.id, c.hotel.rating, AVG(c.estimation) FROM Comment c GROUP BY c.hotel.id")
+    @Query("SELECT c.hotel.id, c.hotel.rating, AVG(c.estimation) " +
+            "FROM Comment c GROUP BY c.hotel.id, c.hotel.rating")
     Optional<List<Object[]>> getHotelAvgRatings();
 }

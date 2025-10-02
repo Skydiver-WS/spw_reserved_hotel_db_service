@@ -26,7 +26,7 @@ public class UpdateRatingHotels {
     @Transactional
     public void updateRatingHotels() {
         log.info("Start update rating hotels");
-        Optional<List<Object[]>> dataOptional =commentRepository.getHotelAvgRatings();
+        Optional<List<Object[]>> dataOptional = commentRepository.getHotelAvgRatings();
         if (dataOptional.isPresent()) {
             List<Object[]> hotelAvgRatings = dataOptional.get();
             hotelAvgRatings.stream()
@@ -39,7 +39,6 @@ public class UpdateRatingHotels {
                         .rating(avgRating)
                         .build());
             });
-
         }
         log.info("Rating hotels updated success");
     }
