@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"numberApart", "hotel"})
+        @UniqueConstraint(columnNames = {"numberApart", "hotel_id"})
 })
 @Data
 @Builder

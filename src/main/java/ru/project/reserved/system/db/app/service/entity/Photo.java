@@ -20,4 +20,13 @@ public class Photo {
     @Column(columnDefinition = "TEXT")
     private String photo;
 
+    @ManyToOne
+    private Hotel hotel;
+
+    @ManyToOne
+    private Room room;
+
+    @ManyToOne
+    private Comment comment;
+
 }

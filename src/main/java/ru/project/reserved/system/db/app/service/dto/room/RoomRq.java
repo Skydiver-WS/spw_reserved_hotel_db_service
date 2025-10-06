@@ -69,7 +69,7 @@ public class RoomRq {
         private Long hotelId;
         private Date startReserved;
         private Date endReserved;
-        private ClassRoomType classType;
+        private ClassRoomType classRoomType;
         private UUID bookingId;
         @NotNull
         private BookingOperationType operationType;

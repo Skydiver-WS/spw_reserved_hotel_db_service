@@ -57,7 +57,7 @@ public class RoomSearchServiceImpl implements RoomSearchService {
             hotelId = roomRq.getRoomBooking().getHotelId();
             startReserved = roomRq.getRoomBooking().getStartReserved();
             endReserved = roomRq.getRoomBooking().getEndReserved();
-            classType = roomRq.getRoomBooking().getClassType();
+            classType = roomRq.getRoomBooking().getClassRoomType();
             if(startReserved == null || endReserved == null) {
                 log.error("Start date reserved {} or end date reserved {} is null", startReserved, endReserved);
                 throw  new BookingException("Not date reserved");

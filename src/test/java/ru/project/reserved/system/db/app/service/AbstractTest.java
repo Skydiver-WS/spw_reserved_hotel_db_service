@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.entity.*;
@@ -156,56 +157,56 @@ public class AbstractTest {
                         .coast(10000.0)
                         .classRoomType(BUSINESS)
                         .description("The best room")
-                        .numberApart(1L)
+                        .numberApart(5L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(100000.0)
                         .classRoomType(LUX)
                         .description("The best room")
-                        .numberApart(2L)
+                        .numberApart(6L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(8000.0)
                         .classRoomType(STANDARD)
                         .description("The best room")
-                        .numberApart(3L)
+                        .numberApart(7L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(1000.0)
                         .classRoomType(ECONOMY)
                         .description("The best room")
-                        .numberApart(4L)
+                        .numberApart(8L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(10000.0)
                         .classRoomType(BUSINESS)
                         .description("The best room")
-                        .numberApart(1L)
+                        .numberApart(9L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(100000.0)
                         .classRoomType(LUX)
                         .description("The best room")
-                        .numberApart(2L)
+                        .numberApart(10L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(8000.0)
                         .classRoomType(STANDARD)
                         .description("The best room")
-                        .numberApart(3L)
+                        .numberApart(11L)
                         .build(),
                 Room.builder()
                         .photoList(photos())
                         .coast(1000.0)
                         .classRoomType(ECONOMY)
                         .description("The best room")
-                        .numberApart(4L)
+                        .numberApart(12L)
                         .build()
         );
     }

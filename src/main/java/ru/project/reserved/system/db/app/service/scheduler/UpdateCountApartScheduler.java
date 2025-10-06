@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class UpdateCountApartScheduler {
 
     private final HotelRepository hotelRepository;
-    private final RoomRepository roomRepository;
 
     @Scheduled(cron = "${scheduler.count-apart}")
     @Async

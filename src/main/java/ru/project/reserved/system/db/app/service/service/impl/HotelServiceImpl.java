@@ -66,7 +66,7 @@ public class HotelServiceImpl implements HotelService {
     public HotelRs createHotel(HotelRq hotelRq) {
         log.info("Create hotel {}", hotelRq.getName());
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRq);
-        Hotel newHotel = hotelRepository.saveAndFlush(hotel);
+        Hotel newHotel = hotelRepository.save(hotel);
         log.info("Hotel: {} save successful", newHotel.getName());
         return hotelMapper.mappingHotelToHotelRequest(newHotel);
     }

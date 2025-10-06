@@ -19,7 +19,8 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
+#    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
+    url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
     username: postgres
     password: postgres
     hikari:
@@ -32,8 +33,8 @@ spring:
     change-log: classpath:/changelog.yml
     user: postgres
     password: postgres
-    #    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=hotel
-    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
+    url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
+#    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
     default-schema: hotel
     liquibase-schema: hotel
     parameters:
