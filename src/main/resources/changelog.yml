@@ -1,7 +1,7 @@
 databaseChangeLog:
 - changeSet:
     id: 1
-    author: Admin (generated)
+    author: isu17 (generated)
     changes:
     - createTable:
         columns:
@@ -118,6 +118,19 @@ databaseChangeLog:
         - column:
             constraints:
               nullable: false
+            name: hotel_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: users_user_id
+            type: UUID
+        tableName: hotel_users
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
             name: room_id
             type: BIGINT
         - column:
@@ -146,6 +159,10 @@ databaseChangeLog:
         columnNames: photos_id
         constraintName: hotel_photos_photos_id_key
         tableName: hotel_photos
+    - addUniqueConstraint:
+        columnNames: users_user_id
+        constraintName: hotel_users_users_user_id_key
+        tableName: hotel_users
     - addUniqueConstraint:
         columnNames: photo_list_id
         constraintName: room_photo_list_photo_list_id_key
@@ -245,6 +262,19 @@ databaseChangeLog:
             name: photo
             type: TEXT
         tableName: photo
+    - createTable:
+        columns:
+        - column:
+            name: hotel_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: users_pkey
+            name: user_id
+            type: UUID
+        tableName: users
     - addForeignKeyConstraint:
         baseColumnNames: hotel_id
         baseTableName: hotel_comments
@@ -310,6 +340,17 @@ databaseChangeLog:
         onUpdate: NO ACTION
         referencedColumnNames: id
         referencedTableName: room
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: users_user_id
+        baseTableName: hotel_users
+        constraintName: fkadkmlgp1vg71pxbv8nb7yb4uj
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: user_id
+        referencedTableName: users
         validate: true
     - addForeignKeyConstraint:
         baseColumnNames: hotel_id
@@ -389,6 +430,17 @@ databaseChangeLog:
         referencedTableName: photo
         validate: true
     - addForeignKeyConstraint:
+        baseColumnNames: hotel_id
+        baseTableName: hotel_users
+        constraintName: fkrmem4us9219fjvby8j3v309fl
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: hotel
+        validate: true
+    - addForeignKeyConstraint:
         baseColumnNames: comment_id
         baseTableName: photo
         constraintName: fksm3nsiqunp5ke6cmkundcw4a1
@@ -398,5 +450,16 @@ databaseChangeLog:
         onUpdate: NO ACTION
         referencedColumnNames: id
         referencedTableName: comment
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: hotel_id
+        baseTableName: users
+        constraintName: fku0p24g6uttftflntm7wtcyc7
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: hotel
         validate: true
 
