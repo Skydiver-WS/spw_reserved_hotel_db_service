@@ -48,10 +48,14 @@ public class Hotel {
             orphanRemoval = true)
     private List<Room> roomList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Photo> photos;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Column(nullable = false)
+    private List<User> users;
 
 }

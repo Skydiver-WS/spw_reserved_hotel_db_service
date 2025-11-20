@@ -13,6 +13,7 @@ import java.util.List;
 public interface HotelMapper {
 
     @Mapping(target = "countApart", expression = "java(0)")
+    @Mapping(target = "users", source = "usersRq", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Hotel mappingHotelRequestToHotel(HotelRq hotelRq);
 
     List<HotelRs> mappingHotelListToHotelResponseList(List<Hotel> hotelList);
@@ -29,6 +30,7 @@ public interface HotelMapper {
     @Mapping(target = "address", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "distance", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "rating", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "users", source = "usersRq", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "photos", ignore = true)
     void updateHotelByHotelRequest(@MappingTarget Hotel hotel, HotelRq hotelRq);
 

@@ -17,7 +17,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
   datasource:
 #    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
     url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
@@ -29,7 +29,7 @@ spring:
       idle-timeout: 600000             # 1 минута
       max-lifetime: 30000
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:/changelog.yml
     user: postgres
     password: postgres
@@ -42,7 +42,7 @@ spring:
 
   sql:
     init:
-      mode: ALWAYS
+      mode: NEVER
       data-locations: classpath:data.sql
 
 scheduler:

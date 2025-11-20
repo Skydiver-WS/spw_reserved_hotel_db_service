@@ -16,8 +16,6 @@ import java.util.List;
 public class HotelRq {
 
     private Long id;
-    @NotNull
-    private String userId;
     private String name;
     private String description;
     private String address;
@@ -26,6 +24,7 @@ public class HotelRq {
     private List<Photo> photos;
     private String city;
     private HotelSearchRequest hotelSearch;
+    private List<UserRq> usersRq;
 
     @Data
     @Builder
@@ -43,5 +42,14 @@ public class HotelRq {
         private Double rating;
         private SortType sortDistance;
         private Double distance;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserRq{
+        @NotNull
+        private String userId;
     }
 }
