@@ -28,6 +28,7 @@ public interface RoomMapper {
     Room roomResponseToRoom(RoomRq roomRq, Hotel hotel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "photoList", ignore = true)
     void updateRoom(@MappingTarget Room room, RoomRq roomRq);
 
     @Named("setIdBooking")

@@ -29,15 +29,16 @@ public class Room {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Photo> photoList;
-
     @Enumerated(EnumType.STRING)
     private ClassRoomType classRoomType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "room")
+    private List<Photo> photoList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "room")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room", orphanRemoval = true)
     private List<Booking> bookings;
 }

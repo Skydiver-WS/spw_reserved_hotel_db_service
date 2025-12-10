@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.service.RoomService;
@@ -20,7 +21,7 @@ public class RoomController {
     }
 
     @PostMapping("/booking")
-    public ResponseEntity<RoomRs> bookingOperation(@RequestBody @Valid RoomRq roomRq) {
+    public ResponseEntity<BookingRs> bookingOperation(@RequestBody @Valid RoomRq roomRq) {
         return ResponseEntity.ok(roomService.reservedRoom(roomRq));
     }
 

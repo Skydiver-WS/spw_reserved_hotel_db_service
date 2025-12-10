@@ -5,15 +5,20 @@ import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Room;
+import ru.project.reserved.system.db.app.service.entity.User;
 
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
-@Mapper(componentModel = "spring", uses = {RoomMapper.class, PhotoMapper.class })
+@Mapper(componentModel = "spring", uses = {RoomMapper.class, PhotoMapper.class, UserMapper.class })
 public interface HotelMapper {
 
     @Mapping(target = "countApart", expression = "java(0)")
     @Mapping(target = "users", source = "usersRq", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "users.id", ignore = true)
     Hotel mappingHotelRequestToHotel(HotelRq hotelRq);
 
     List<HotelRs> mappingHotelListToHotelResponseList(List<Hotel> hotelList);
@@ -30,9 +35,11 @@ public interface HotelMapper {
     @Mapping(target = "address", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "distance", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "rating", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "users", source = "usersRq", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "photos", ignore = true)
-    void updateHotelByHotelRequest(@MappingTarget Hotel hotel, HotelRq hotelRq);
+    @Mapping(target = "users", ignore = true)
+    @Mapping(target = "roomList", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+   void updateHotelByHotelRequest(@MappingTarget Hotel hotel, HotelRq hotelRq);
 
     @Named("minCoast")
     default Double minCoast(List<Room> roomList) {
@@ -42,13 +49,6 @@ public interface HotelMapper {
                 .min(Comparator.comparingDouble(Room::getCoast))
                 .map(Room::getCoast)
                 .orElse(0.0);
-    }
-
-    @AfterMapping
-    default void sortHotelByRating(@MappingTarget List<HotelRs> responses) {
-        if (responses != null) {
-            responses.sort(Comparator.comparingDouble(HotelRs::getRating).reversed());
-        }
     }
 }
 

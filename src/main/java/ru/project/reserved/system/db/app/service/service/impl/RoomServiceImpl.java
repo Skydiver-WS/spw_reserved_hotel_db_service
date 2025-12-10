@@ -11,10 +11,12 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.annotation.Transactional;
+import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
+import ru.project.reserved.system.db.app.service.entity.Photo;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
@@ -61,6 +63,7 @@ public class RoomServiceImpl implements RoomService {
         Hotel hotel = hotelRepository.findById(roomRq.getHotelId()).
                 orElseThrow(() -> new EntityNotFoundException("Hotel with id " + roomRq.getHotelId() + " not found"));
         Room newRoom = roomMapper.roomResponseToRoom(roomRq, hotel);
+        newRoom.getPhotoList().forEach(p -> p.setRoom(newRoom));
         Room room = roomRepository.saveAndFlush(newRoom);
         log.info("Room save successful");
         return roomMapper.roomToRoomResponse(room);
@@ -80,15 +83,24 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomRs updateRoom(RoomRq roomRq) {
         Optional<Room> findRoom = roomRepository.findRoomByIdAndHotel_Id(roomRq.getId(), roomRq.getHotelId());
-        if (findRoom.isPresent()) {
-            log.info("Update room");
-            roomMapper.updateRoom(findRoom.get(), roomRq);
-            Room newRoom = roomRepository.save(findRoom.get());
-            return roomMapper.roomToRoomResponse(newRoom);
+        if (findRoom.isEmpty()) {
+            log.warn("Room with id {} not found", roomRq.getId());
+            return RoomRs.builder()
+                    .errorMessage("Room not found")
+                    .build();
         }
-        return RoomRs.builder()
-                .errorMessage("Room not found")
-                .build();
+        log.info("Update room");
+        Room room = findRoom.get();
+        roomMapper.updateRoom(room, roomRq);
+        if (Objects.nonNull(roomRq.getPhotoList())) {
+            List<Photo> photoList = room.getPhotoList();
+            roomRq.getPhotoList().forEach(p -> p.setRoom(room));
+            photoList.addAll(room.getPhotoList());
+            room.setPhotoList(photoList);
+        }
+        Room newRoom = roomRepository.save(room);
+        return roomMapper.roomToRoomResponse(newRoom);
+
     }
 
     @Override
@@ -97,17 +109,17 @@ public class RoomServiceImpl implements RoomService {
             roomRepository.deleteByHotelIdAndRoomId(request.getHotelId(), request.getId());
             log.info("Remove room");
             return RoomRs.builder()
-                    .id( request.getId())
+                    .id(request.getId())
                     .description("Room delete")
                     .build();
         }
         return RoomRs.builder()
-                .errorMessage("Room " +  request.getId() + " not found")
+                .errorMessage("Room " + request.getId() + " not found")
                 .build();
     }
 
     @Override
-    public RoomRs reservedRoom(RoomRq roomRq) {
+    public BookingRs reservedRoom(RoomRq roomRq) {
         try {
             if (BookingOperationType.UPDATE.equals(roomRq.getRoomBooking().getOperationType())) {
                 return bookingService.updateBookingRoom(roomRq);
@@ -117,8 +129,8 @@ public class RoomServiceImpl implements RoomService {
             }
             return bookingService.createBookingRoom(roomRq);
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return RoomRs.builder()
+            log.error("Error operation booking: ", e);
+            return BookingRs.builder()
                     .errorMessage(e.getMessage())
                     .classRoomType(roomRq.getClassRoomType())
                     .build();

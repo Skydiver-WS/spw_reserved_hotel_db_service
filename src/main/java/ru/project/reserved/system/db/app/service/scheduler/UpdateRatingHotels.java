@@ -6,10 +6,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
+import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.repository.CommentRepository;
-import ru.project.reserved.system.db.app.service.service.HotelService;
-
+import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Slf4j
 public class UpdateRatingHotels {
 
-    private final HotelService hotelService;
+    private final HotelRepository hotelRepository;
     private final CommentRepository commentRepository;
 
     @Scheduled(cron = "${scheduler.rating}")
@@ -32,15 +31,15 @@ public class UpdateRatingHotels {
             hotelAvgRatings.stream()
                     .filter(h -> !h[1].equals(h[2]))
                     .forEach(result -> {
-                Long hotelId = (Long) result[0];
-                Double avgRating = (Double) result[2];
-                hotelService.updateHotel(HotelRq.builder()
-                        .id(hotelId)
-                        .rating(avgRating)
-                        .build());
-            });
+                        Long hotelId = (Long) result[0];
+                        Double avgRating = (Double) result[2];
+                        Hotel hotel = hotelRepository.findById(hotelId).orElse(null);
+                        hotel.setRating(avgRating);
+                        hotel.setCountComments(commentRepository.countComments(hotelId));
+                        hotelRepository.save(hotel);
+                        log.info("Rating hotels {} updated success", hotelId);
+                    });
         }
-        log.info("Rating hotels updated success");
     }
 
 

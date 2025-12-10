@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
+import ru.project.reserved.system.db.app.service.entity.User;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
+import ru.project.reserved.system.db.app.service.mapper.PhotoMapper;
+import ru.project.reserved.system.db.app.service.mapper.UserMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.service.HotelSearchService;
 import ru.project.reserved.system.db.app.service.service.HotelService;
@@ -28,6 +31,8 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final PhotoMapper photoMapper;
+    private final UserMapper userMapper;
     private final HotelSearchService hotelSearchService;
 
     @Override
@@ -58,7 +63,7 @@ public class HotelServiceImpl implements HotelService {
     @SneakyThrows
     @Retryable(
             retryFor = {IncorrectResultSizeDataAccessException.class, DataAccessException.class, IOException.class,
-            PersistentObjectException.class},
+                    PersistentObjectException.class},
             maxAttempts = 5,
             backoff = @Backoff(delay = 500, multiplier = 1)
     )
@@ -66,6 +71,8 @@ public class HotelServiceImpl implements HotelService {
     public HotelRs createHotel(HotelRq hotelRq) {
         log.info("Create hotel {}", hotelRq.getName());
         Hotel hotel = hotelMapper.mappingHotelRequestToHotel(hotelRq);
+        hotel.getPhotos().forEach(photo -> photo.setHotel(hotel));
+        hotel.getUsers().forEach(u -> u.setHotel(hotel));
         Hotel newHotel = hotelRepository.save(hotel);
         log.info("Hotel: {} save successful", newHotel.getName());
         return hotelMapper.mappingHotelToHotelRequest(newHotel);
@@ -82,19 +89,22 @@ public class HotelServiceImpl implements HotelService {
                     .build();
         }
         Hotel hotel = hotelOptional.get();
+        if (Objects.nonNull(hotelRq.getPhotos())) {
+            hotel.getPhotos().addAll(hotelRq.getPhotos());
+            hotel.getPhotos().forEach(photo -> photo.setHotel(hotel));
+        }
+        if (Objects.nonNull(hotelRq.getUsersRq())) {
+            hotel.getUsers().addAll(hotelRq.getUsersRq().stream().map(u -> User.builder()
+                    .userId(u.getUserId())
+                    .hotel(hotel)
+                    .build()).toList());
+        }
         hotelMapper.updateHotelByHotelRequest(hotel, hotelRq);
         try {
-            Hotel updatedHotel;
-            if (hotelRq.getPhotos() != null) {
-                hotel.setPhotos(hotelRq.getPhotos());
-            } else {
-                hotel.setPhotos(hotelOptional.get().getPhotos());
-            }
-                updatedHotel = hotelRepository.save(hotel);
+            Hotel updatedHotel = hotelRepository.save(hotel);
             return hotelMapper.mappingHotelToHotelRequest(updatedHotel);
         } catch (Exception ex) {
-            log.error(ex.getMessage());
-            ex.printStackTrace();
+            log.error("Error updating hotel", ex);
             return HotelRs.builder()
                     .name(hotelRq.getName())
                     .errorMessage(ex.getMessage())

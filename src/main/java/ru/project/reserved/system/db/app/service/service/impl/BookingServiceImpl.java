@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.entity.Booking;
@@ -36,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @SneakyThrows
-    public RoomRs createBookingRoom(RoomRq roomRq) {
+    public BookingRs createBookingRoom(RoomRq roomRq) {
         List<Room> roomResponses = search.searchRoomByParameterForReserved(roomRq);
         if (roomResponses.isEmpty()) {
             throw new BookingException("Rooms by request not found. \n" +
@@ -46,24 +47,23 @@ public class BookingServiceImpl implements BookingService {
         Room room = roomResponses.size() == 1 ? roomResponses.getFirst()
                 : roomResponses.get(random.nextInt(roomResponses.size()));
         Booking booking = bookingMapper.bookingFromRoomRequest(roomRq, room);
-        room.setBookings(new ArrayList<>(List.of(booking)));
-        Room roomReserved = roomRepository.save(room);
-        return roomMapper.roomToRoomResponse(roomReserved);
+        booking = bookingRepository.save(booking);
+        return bookingMapper.bookingToBookingRs(booking);
     }
 
     @Override
-    @Transactional
-    public RoomRs updateBookingRoom(RoomRq roomRq) {
+    public BookingRs updateBookingRoom(RoomRq roomRq) {
         Optional<Booking> bookingOptional = bookingRepository.findById(roomRq.getRoomBooking().getBookingId());
         if (bookingOptional.isEmpty()) {
             throw new BookingException("Booking with id " + roomRq.getRoomBooking().getBookingId() + " not found.");
         }
-        deleteBookingRoom(roomRq);
         try {
+            deleteBookingRoom(roomRq);
             return createBookingRoom(roomRq);
         } catch (BookingException e) {
+            log.error("Error update booking: ", e);
             bookingRepository.save(bookingOptional.get());
-            return RoomRs.builder()
+            return BookingRs.builder()
                     .bookingId(roomRq.getRoomBooking().getBookingId())
                     .errorMessage(e.getMessage())
                     .build();
@@ -71,15 +71,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
-    public RoomRs deleteBookingRoom(RoomRq roomRq) {
+    public BookingRs deleteBookingRoom(RoomRq roomRq) {
         bookingRepository.deleteBookingById(roomRq.getRoomBooking().getBookingId());
-        bookingRepository.flush();
-
         if (bookingRepository.existsBookingById(roomRq.getRoomBooking().getBookingId())) {
             throw new BookingException("Booking not remove");
         }
-        return RoomRs.builder()
+        return BookingRs.builder()
                 .bookingId(roomRq.getRoomBooking().getBookingId())
                 .description("Booking remove successfully")
                 .build();

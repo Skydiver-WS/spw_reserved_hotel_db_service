@@ -1,11 +1,12 @@
 package ru.project.reserved.system.db.app.service.service;
 
+import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 
 public interface BookingService {
 
-    RoomRs createBookingRoom(RoomRq roomRq);
-    RoomRs updateBookingRoom(RoomRq roomRq);
-    RoomRs deleteBookingRoom(RoomRq roomRq);
+    BookingRs createBookingRoom(RoomRq roomRq);
+    BookingRs updateBookingRoom(RoomRq roomRq);
+    BookingRs deleteBookingRoom(RoomRq roomRq);
 }

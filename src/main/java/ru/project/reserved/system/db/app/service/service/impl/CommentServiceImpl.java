@@ -15,6 +15,7 @@ import ru.project.reserved.system.db.app.service.repository.CommentRepository;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.service.CommentService;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -33,12 +34,17 @@ public class CommentServiceImpl implements CommentService {
         Hotel hotel = hotelRepository.findById(commentRq.getHotelId())
                 .orElseThrow(() -> new HotelException("Hotel by id " + commentRq.getHotelId() + " not found"));
         Comment comment = commentMapper.commentFromCommentRqAndHotel(commentRq, hotel);
+        if (Objects.nonNull(commentRq.getPhotos())) {
+            Comment finalComment = comment;
+            commentRq.getPhotos().forEach(p -> p.setComment(finalComment));
+            comment.setPhotos(commentRq.getPhotos());
+        }
         try {
             comment = commentRepository.save(comment);
             log.info("Comment create success");
             return CommentRs.builder()
                     .commentId(comment.getId().toString()).build();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.error("Comment not create");
             throw new CommentException("Comment not created. Message: " + ex.getMessage());
         }
@@ -47,19 +53,24 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentRs updateComment(CommentRq commentRq) {
-        log.info("Update comment with id {}", commentRq.getId());
-        Comment comment = commentRepository.findById(UUID.fromString(commentRq.getId()))
-                .orElseThrow(() -> new CommentException("Comment by id " + commentRq.getId() + "not found"));
+        log.info("Update comment with id {}", commentRq.getCommentId());
+        Comment comment = commentRepository.findById(UUID.fromString(commentRq.getCommentId()))
+                .orElseThrow(() -> new CommentException("Comment by id " + commentRq.getCommentId() + "not found"));
         commentMapper.updateComment(comment, commentRq);
+        if (Objects.nonNull(commentRq.getPhotos())) {
+            commentRq.getPhotos().forEach(c -> c.setComment(comment));
+            comment.getPhotos().addAll(commentRq.getPhotos());
+        }
         try {
             commentRepository.save(comment);
             log.info("Comment update success");
             return CommentRs.builder()
+                    .commentId(comment.getId().toString())
                     .message("Comment update success")
                     .build();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.error("Comment by id {} not update", comment.getId());
-            throw new CommentException("Comment by id " + commentRq.getId() +  " not update. Message: "
+            throw new CommentException("Comment by id " + commentRq.getCommentId() + " not update. Message: "
                     + ex.getMessage());
         }
     }
@@ -67,17 +78,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentRs deleteComment(CommentRq commentRq) {
-        log.info("Delete comment with id {}", commentRq.getId());
-        Comment comment = commentRepository.findById(UUID.fromString(commentRq.getId()))
-                .orElseThrow(() -> new CommentException("Comment by id " + commentRq.getId() + "not found"));
+        log.info("Delete comment with id {}", commentRq.getCommentId());
+        Comment comment = commentRepository.findById(UUID.fromString(commentRq.getCommentId()))
+                .orElseThrow(() -> new CommentException("Comment by id " + commentRq.getCommentId() + "not found"));
         commentRepository.deleteById(comment.getId());
-        if (commentRepository.existsCommentById(comment.getId())){
-            log.info("Comment with id {} delete success", comment.getId());
-            return CommentRs.builder()
-                    .message("Comment with id " + comment.getId() + " delete success")
-                    .build();
-        }
-        log.error("Comment by id {} not delete", comment.getId());
-        throw new CommentException("Comment by id " + commentRq.getId() +  " not delete");
+        commentRepository.flush();
+        log.info("Comment with id {} delete success", comment.getId());
+        return CommentRs.builder()
+                .message("Comment with id " + comment.getId() + " delete success")
+                .build();
     }
 }

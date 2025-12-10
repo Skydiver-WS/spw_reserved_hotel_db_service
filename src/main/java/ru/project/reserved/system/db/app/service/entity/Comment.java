@@ -24,11 +24,11 @@ public class Comment {
     @Column(columnDefinition = "TEXT")
     private String comment;
     private Double estimation;
-    private Date created;
+    private Date created = new Date();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "comment")
     private List<Photo> photos;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Hotel hotel;
 }

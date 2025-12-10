@@ -3,6 +3,7 @@ package ru.project.reserved.system.db.app.service.booking;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.project.reserved.system.db.app.service.AbstractTest;
+import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
@@ -30,7 +31,7 @@ public class BookingTest extends AbstractTest {
                         .operationType(BookingOperationType.CREATE)
                         .build())
                 .build();
-        RoomRs response = roomService.reservedRoom(roomRq);
+        BookingRs response = roomService.reservedRoom(roomRq);
         Booking booking = bookingRepository.findById(response.getBookingId()).orElse(null);
         Assertions.assertNotNull(response);
         Assertions.assertEquals(booking.getId(), response.getBookingId());
@@ -59,7 +60,7 @@ public class BookingTest extends AbstractTest {
                         .build())
                 .build();
 
-        RoomRs response = roomService.reservedRoom(roomRq);
+        BookingRs response = roomService.reservedRoom(roomRq);
         Booking booking1 = bookingRepository.findById(response.getBookingId()).orElse(null);
         Assertions.assertNotNull(response);
         Assertions.assertEquals(booking1.getId(), response.getBookingId());
@@ -74,7 +75,7 @@ public class BookingTest extends AbstractTest {
                         .bookingId(id)
                         .build())
                 .build();
-        RoomRs response  = roomService.reservedRoom(roomRq);
+        BookingRs response  = roomService.reservedRoom(roomRq);
         Assertions.assertEquals("Booking remove successfully", response.getDescription());
     }
 }

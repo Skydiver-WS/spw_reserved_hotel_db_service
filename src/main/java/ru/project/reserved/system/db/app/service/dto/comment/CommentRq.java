@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 public class CommentRq {
 
-    private String id;
+    private String commentId;
     @NotNull
     private String userId;
     @NotNull
