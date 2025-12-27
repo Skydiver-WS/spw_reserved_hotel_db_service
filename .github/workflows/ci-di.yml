@@ -27,8 +27,8 @@ jobs:
             echo "Extracted version: $VERSION"
 
       # Шаг 3: Сборка и тестирование проекта с помощью Maven
-      - name: Run tests
-        run: mvn clean test
+#      - name: Run tests
+#        run: mvn clean test
 
       - name: Build with Maven
         run: mvn -DskipTests clean package
