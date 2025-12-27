@@ -5,6 +5,8 @@ server:
 spring:
   profiles:
     active: @spring.profiles.active@
+  application:
+    name: reserved_hotel_db_service
   task:
     scheduling:
       pool:
@@ -19,9 +21,8 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-#    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
-    url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
-#    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=hotel
+    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
+#    url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
     username: postgres
     password: postgres
     hikari:
@@ -45,6 +46,26 @@ spring:
     init:
       mode: ALWAYS
       data-locations: classpath:data.sql
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      access: read_only
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+    tags:
+      application: ${spring.application.name}
+  server:
+    port: ${server.port}  # Actuator порт (можно оставить тот же)
 
 scheduler:
   count-apart: "0 */5 * * * *"

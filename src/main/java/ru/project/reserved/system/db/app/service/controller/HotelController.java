@@ -1,5 +1,6 @@
 package ru.project.reserved.system.db.app.service.controller;
 
+import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import ru.project.reserved.system.db.app.service.service.HotelService;
 public class HotelController {
 
     private final HotelService hotelService;
+    private final Counter counter;
 
     @GetMapping
     public ResponseEntity<HotelRs> findAllHotels(){
@@ -27,6 +29,7 @@ public class HotelController {
 
     @PostMapping
     public ResponseEntity<HotelRs> createHotel(@Validated @RequestBody HotelRq hotelRq){
+        counter.increment();
         return ResponseEntity.ok(hotelService.createHotel(hotelRq));
     }
 
