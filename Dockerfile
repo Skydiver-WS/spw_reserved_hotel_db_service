@@ -1,4 +1,4 @@
-FROM openjdk:23
+FROM maven:3.9-amazoncorretto-23 as builder
 LABEL authors="Aleksandr"
 
 WORKDIR /app
