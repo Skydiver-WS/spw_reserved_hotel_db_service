@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.PersistentObjectException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,6 @@ import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.User;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
-import ru.project.reserved.system.db.app.service.mapper.PhotoMapper;
-import ru.project.reserved.system.db.app.service.mapper.UserMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.service.HotelSearchService;
 import ru.project.reserved.system.db.app.service.service.HotelService;
@@ -31,20 +31,19 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
-    private final PhotoMapper photoMapper;
-    private final UserMapper userMapper;
     private final HotelSearchService hotelSearchService;
 
     @Override
     @SneakyThrows
-    public HotelRs getAllHotels() {
+    public HotelRs getAllHotels(Pageable pageable) {
         log.info("Get all hotels");
         try {
+            Page<Hotel> hotelsPage = hotelRepository.findAll(pageable);
             return HotelRs.builder()
-                    .hotels(hotelMapper.mappingHotelListToHotelResponseList(hotelRepository.findAll()))
+                    .hotels(hotelMapper.mappingHotelListToHotelResponseList(hotelsPage.getContent()))
                     .build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error get hotels: ", e);
             return HotelRs.builder()
                     .errorMessage(e.getMessage())
                     .build();
@@ -129,5 +128,10 @@ public class HotelServiceImpl implements HotelService {
                 .id(hotelRq.getId())
                 .message("Hotel with id " + hotelRq.getId() + " delete")
                 .build();
+    }
+
+    @Override
+    public boolean checkDeniedUser(HotelRq hotelRq) {
+        return hotelRepository.existsByIdAndUsersUserId(hotelRq.getId(), hotelRq.getUserRq().getUserId());
     }
 }

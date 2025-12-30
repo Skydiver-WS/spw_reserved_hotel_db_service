@@ -15,6 +15,7 @@ import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.dto.type.BookingOperationType;
+import ru.project.reserved.system.db.app.service.dto.type.MetricType;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 import ru.project.reserved.system.db.app.service.entity.Room;
@@ -22,6 +23,7 @@ import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.BookingService;
+import ru.project.reserved.system.db.app.service.service.MetricService;
 import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 
@@ -37,6 +39,7 @@ public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
     private final RoomSearchService searchService;
     private final BookingService bookingService;
+    private final MetricService metric;
 
 
     @Override
@@ -121,15 +124,23 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public BookingRs reservedRoom(RoomRq roomRq) {
         try {
+            BookingRs rs = null;
             if (BookingOperationType.UPDATE.equals(roomRq.getRoomBooking().getOperationType())) {
-                return bookingService.updateBookingRoom(roomRq);
+               rs = bookingService.updateBookingRoom(roomRq);
+                metric.sendMetricEnd(MetricType.UPDATE_RESERVATION, rs, "Update reserved");
+                return rs;
             }
             if (BookingOperationType.DELETE.equals(roomRq.getRoomBooking().getOperationType())) {
-                return bookingService.deleteBookingRoom(roomRq);
+                rs = bookingService.deleteBookingRoom(roomRq);
+                metric.sendMetricEnd(MetricType.DELETE_RESERVATION, rs, "Delete reserved");
+                return rs;
             }
-            return bookingService.createBookingRoom(roomRq);
+            rs = bookingService.createBookingRoom(roomRq);
+            metric.sendMetricEnd(MetricType.CREATE_RESERVATION, rs, "Create reserved");
+            return rs;
         } catch (Exception e) {
             log.error("Error operation booking: ", e);
+            metric.sendExceptionMetric(MetricType.ERROR, e, e.getMessage());
             return BookingRs.builder()
                     .errorMessage(e.getMessage())
                     .classRoomType(roomRq.getClassRoomType())

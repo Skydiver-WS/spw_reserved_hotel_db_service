@@ -25,6 +25,7 @@ public class HotelRq {
     private String city;
     private HotelSearchRequest hotelSearch;
     private List<UserRq> usersRq;
+    private UserRq userRq;
 
     @Data
     @Builder

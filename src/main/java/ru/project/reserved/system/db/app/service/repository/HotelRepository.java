@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.project.reserved.system.db.app.service.entity.Hotel;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
@@ -15,6 +16,12 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     @Query("SELECT h.id, h.countApart, SIZE(h.roomList) FROM Hotel h")
     List<Long[]> findAllWithRoomCount();
     List<Hotel> findAllByIdIn(List<Long> ids);
-    boolean existsByNameAndCity(String name, String cityName);
+    boolean existsByIdAndUsersUserId(Long id, String userId);
+
+    @Query("""
+           select h
+           from Hotel h
+           """)
+    Stream<Hotel> streamAll();
 
 }
