@@ -52,12 +52,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Retryable(
-            maxAttempts = 10,
-            backoff = @Backoff(delay = 500, multiplier = 2),
+            maxAttempts = 2,
+            backoff = @Backoff(delay = 300, multiplier = 2),
             retryFor = {ObjectOptimisticLockingFailureException.class,
                     DataAccessException.class,
                     IOException.class,
-                    NonUniqueResultException.class,
+//                    NonUniqueResultException.class,
                     CannotCreateTransactionException.class}
     )
     @Transactional
