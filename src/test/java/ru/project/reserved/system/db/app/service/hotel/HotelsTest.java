@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 import ru.project.reserved.system.db.app.service.AbstractTest;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
@@ -89,7 +90,7 @@ public class HotelsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);;
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));;
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
@@ -112,7 +113,7 @@ public class HotelsTest extends AbstractTest {
                         .rating(2.0)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -136,7 +137,7 @@ public class HotelsTest extends AbstractTest {
                         .rating(7.0)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
@@ -159,7 +160,7 @@ public class HotelsTest extends AbstractTest {
                         .distance(20.0)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -183,7 +184,7 @@ public class HotelsTest extends AbstractTest {
                         .distance(10.0)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
@@ -207,7 +208,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(10000L)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -224,7 +225,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(1000000L)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertEquals(0, response.getHotels().size());
     }
 
@@ -250,7 +251,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(10000L)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
@@ -273,7 +274,7 @@ public class HotelsTest extends AbstractTest {
                         .coastMax(100000L)
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertEquals(0, response.getHotels().size());
     }
 

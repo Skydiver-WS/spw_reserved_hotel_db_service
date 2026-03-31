@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
@@ -28,18 +29,18 @@ public class RoomSearchServiceImpl implements RoomSearchService {
     private static final double EPSILON = 1e-10;
 
     @Override
-    public List<Room> searchRoomByParameter(RoomRq roomRq) {
+    public List<Room> searchRoomByParameter(RoomRq roomRq, Pageable pageable) {
         log.info("Search rooms");
-        return findAndFilterRooms(roomRq);
+        return findAndFilterRooms(roomRq, pageable);
     }
 
     @Override
     public List<Room> searchRoomByParameterForReserved(RoomRq roomRq) {
         log.info("Search rooms by reserved");
-        return findAndFilterRooms(roomRq);
+        return findAndFilterRooms(roomRq, null);
     }
 
-    private List<Room> findAndFilterRooms(RoomRq roomRq) {
+    private List<Room> findAndFilterRooms(RoomRq roomRq, Pageable pageable) {
         Long hotelId;
         Date startReserved;
         Date endReserved;

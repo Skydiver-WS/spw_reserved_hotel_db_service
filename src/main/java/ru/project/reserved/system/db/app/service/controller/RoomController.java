@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.project.reserved.system.db.app.service.aop.Metric;
@@ -19,8 +20,8 @@ public class RoomController {
 
     @GetMapping
     @Metric(type = MetricType.ALL_ROOMS, description = "Get all rooms")
-    public ResponseEntity<RoomRs> findAllRooms() {
-        return ResponseEntity.ok(roomService.findAllRooms());
+    public ResponseEntity<RoomRs> findAllRooms(Pageable pageable) {
+        return ResponseEntity.ok(roomService.findAllRooms(pageable));
     }
 
     @PostMapping("/booking")
@@ -30,8 +31,8 @@ public class RoomController {
 
     @PostMapping("/search")
     @Metric(type = MetricType.FIND_ROOMS, description = "Find rooms")
-    public ResponseEntity<RoomRs> findRooms(@RequestBody @Valid RoomRq roomRq) {
-        return ResponseEntity.ok(roomService.findRoomsForParameters(roomRq));
+    public ResponseEntity<RoomRs> findRooms(@RequestBody @Valid RoomRq roomRq, Pageable pageable) {
+        return ResponseEntity.ok(roomService.findRoomsForParameters(roomRq, pageable));
     }
 
     @PostMapping
