@@ -89,6 +89,7 @@ public class AbstractTest {
         hotel.setCity("Москва");
         hotel.setRating(7.4);
         hotel.setDistance(4.8);
+        hotel.setUsers(users());
         return hotel;
     }
 
@@ -99,6 +100,7 @@ public class AbstractTest {
         hotel.setCity("Тула");
         hotel.setRating(2.0);
         hotel.setDistance(15.0);
+        hotel.setUsers(users());
         return hotel;
     }
 
@@ -109,6 +111,7 @@ public class AbstractTest {
         hotel.setCity("Пермь");
         hotel.setRating(3.2);
         hotel.setDistance(4.5);
+        hotel.setUsers(users());
         return hotel;
     }
 
@@ -238,5 +241,17 @@ public class AbstractTest {
                 Photo.builder()
                         .photo("TEST_PHOTO")
                         .build()));
+    }
+
+    private List<User> users(){
+        return List.of(User.builder()
+                .userId("123")
+                .build(),
+                User.builder()
+                        .userId("1234")
+                        .build(),
+                User.builder()
+                        .userId("12345")
+                        .build());
     }
 }

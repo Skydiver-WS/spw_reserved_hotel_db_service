@@ -103,7 +103,7 @@ public class RoomsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertFalse(response.getRooms().isEmpty());
     }
 
@@ -126,7 +126,7 @@ public class RoomsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertFalse(response.getRooms().getFirst().getErrorMessage().isEmpty());
     }
 
@@ -150,7 +150,7 @@ public class RoomsTest extends AbstractTest {
                         .classRoomType(ClassRoomType.STANDARD)
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertEquals(3, response.getRooms().size());
     }
 
@@ -174,7 +174,7 @@ public class RoomsTest extends AbstractTest {
                         .coast(2000.0)
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertEquals(3, response.getRooms().size());
     }
 

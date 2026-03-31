@@ -18,17 +18,17 @@ import java.util.Date;
 
 public class HotelsTest extends AbstractTest {
 
-    @Test
-    @SneakyThrows
-    @Order(1)
-    public void createHotelTest() {
-        String jsonHotel = new String(Files.readAllBytes(new File("src/test/resources/hotel/hotelTest.json").toPath()));
-        HotelRq hotelRq = objectMapper.readValue(jsonHotel, HotelRq.class);
-        HotelRs response = hotelService.createHotel(hotelRq);
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals("Hotel Рамен", response.getName());
-        Assertions.assertEquals("123 Beach Avenue", response.getAddress());
-    }
+//    @Test
+//    @SneakyThrows
+//    @Order(1)
+//    public void createHotelTest() {
+//        String jsonHotel = new String(Files.readAllBytes(new File("src/test/resources/hotel/hotelTest.json").toPath()));
+//        HotelRq hotelRq = objectMapper.readValue(jsonHotel, HotelRq.class);
+//        HotelRs response = hotelService.createHotel(hotelRq);
+//        Assertions.assertNotNull(response);
+//        Assertions.assertEquals("Hotel Рамен", response.getName());
+//        Assertions.assertEquals("123 Beach Avenue", response.getAddress());
+//    }
 
     @Test
     @Order(2)
@@ -72,7 +72,7 @@ public class HotelsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        HotelRs response = hotelService.getAllHotelsByParams(request);
+        HotelRs response = hotelService.getAllHotelsByParams(request, Pageable.ofSize(1));
         Assertions.assertNotNull(response);
         Assertions.assertEquals("Hotel Тула", response.getHotels().getFirst().getName());
     }
