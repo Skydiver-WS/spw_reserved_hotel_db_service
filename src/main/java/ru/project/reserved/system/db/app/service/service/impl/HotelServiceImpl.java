@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ import ru.project.reserved.system.db.app.service.service.HotelService;
 
 import java.io.IOException;
 import java.util.*;
+
+import static ru.project.reserved.system.db.app.service.service.impl.specification.HotelSearchSpecificationServiceImpl.hotelSearch;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +56,14 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelRs getAllHotelsByParams(HotelRq request) {
         log.info("Get hotels by params");
+//        return HotelRs.builder()
+//                .hotels(hotelSearchService.searchHotels(request))
+//                .build();
+        Specification<Hotel> hotelSpecification = Specification.<Hotel>unrestricted()
+                .and(hotelSearch(request.getId()));
+       Optional<Hotel> h = hotelRepository.findOne(hotelSpecification);
         return HotelRs.builder()
-                .hotels(hotelSearchService.searchHotels(request))
+                .hotels(null)
                 .build();
     }
 

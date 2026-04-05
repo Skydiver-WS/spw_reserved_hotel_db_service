@@ -26,20 +26,17 @@ public class UpdateRatingHotels {
     public void updateRatingHotels() {
         log.info("Start update rating hotels");
         Optional<List<Object[]>> dataOptional = commentRepository.getHotelAvgRatings();
-        if (dataOptional.isPresent()) {
-            List<Object[]> hotelAvgRatings = dataOptional.get();
-            hotelAvgRatings.stream()
-                    .filter(h -> !h[1].equals(h[2]))
-                    .forEach(result -> {
-                        Long hotelId = (Long) result[0];
-                        Double avgRating = (Double) result[2];
-                        Hotel hotel = hotelRepository.findById(hotelId).orElse(null);
-                        hotel.setRating(avgRating);
-                        hotel.setCountComments(commentRepository.countComments(hotelId));
-                        hotelRepository.save(hotel);
-                        log.info("Rating hotels {} updated success", hotelId);
-                    });
-        }
+        dataOptional.ifPresent(hotelAvgRatings -> hotelAvgRatings.stream()
+                .filter(h -> !h[1].equals(h[2]))
+                .forEach(result -> {
+                    Long hotelId = (Long) result[0];
+                    Double avgRating = (Double) result[2];
+                    Hotel hotel = hotelRepository.findById(hotelId).orElse(null);
+                    hotel.setRating(avgRating);
+                    hotel.setCountComments(commentRepository.countComments(hotelId));
+                    hotelRepository.save(hotel);
+                    log.info("Rating hotels {} updated success", hotelId);
+                }));
     }
 
 
