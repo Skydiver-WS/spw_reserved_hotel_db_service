@@ -25,7 +25,7 @@ import ru.project.reserved.system.db.app.service.service.HotelService;
 import java.io.IOException;
 import java.util.*;
 
-import static ru.project.reserved.system.db.app.service.service.impl.specification.HotelSearchSpecificationServiceImpl.hotelSearch;
+import static ru.project.reserved.system.db.app.service.specification.HotelSearchSpecificationServiceImpl.hotelSearch;
 
 @Service
 @RequiredArgsConstructor
