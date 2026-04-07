@@ -25,7 +25,8 @@ import ru.project.reserved.system.db.app.service.service.HotelService;
 import java.io.IOException;
 import java.util.*;
 
-import static ru.project.reserved.system.db.app.service.specification.HotelSearchSpecificationServiceImpl.hotelSearch;
+import static ru.project.reserved.system.db.app.service.specification.HotelSearchSpecification.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -60,10 +61,18 @@ public class HotelServiceImpl implements HotelService {
 //                .hotels(hotelSearchService.searchHotels(request))
 //                .build();
         Specification<Hotel> hotelSpecification = Specification.<Hotel>unrestricted()
-                .and(hotelSearch(request.getId()));
-       Optional<Hotel> h = hotelRepository.findOne(hotelSpecification);
+                .and(hotelSearchById(request.getId()))
+                .and(hotelSearchByName(request.getHotelSearch().getHotelName()))
+                .and(hotelSearchByCity(request.getHotelSearch().getCity()))
+                .and(hotelSearchByDistance(request.getHotelSearch().getDistance()))
+                .and(hotelSearchByRoomType(request.getHotelSearch().getClassRoomType()))
+                .and(hotelSearchByRoomCoast(request.getHotelSearch().getCoastMin(),
+                        request.getHotelSearch().getCoastMax()))
+                .and(searchByHasBookingBetweenDates(request.getHotelSearch().getStartReserved(),
+                        request.getHotelSearch().getEndReserved()));
+        Page<Hotel> page = hotelRepository.findAll(hotelSpecification, pageable);
         return HotelRs.builder()
-                .hotels(null)
+                .hotels(hotelMapper.mappingHotelListToHotelResponseList(page.stream().toList()))
                 .build();
     }
 
