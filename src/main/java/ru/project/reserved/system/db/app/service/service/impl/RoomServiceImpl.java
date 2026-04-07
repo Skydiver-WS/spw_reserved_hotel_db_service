@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.NonUniqueResultException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -43,10 +44,10 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public RoomRs findAllRooms() {
+    public RoomRs findAllRooms(Pageable pageable) {
         log.info("Find all rooms");
         return RoomRs.builder()
-                .rooms(roomMapper.roomsToRoomResponses(roomRepository.findAll()))
+                .rooms(roomMapper.roomsToRoomResponses(roomRepository.findAll(pageable).stream().toList()))
                 .build();
     }
 
@@ -73,9 +74,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomRs findRoomsForParameters(RoomRq request) {
+    public RoomRs findRoomsForParameters(RoomRq request, Pageable pageable) {
         log.info("Find rooms for parameters");
-        List<Room> roomResponses = searchService.searchRoomByParameter(request);
+        List<Room> roomResponses = searchService.searchRoomByParameter(request, pageable);
         return RoomRs.builder()
                 .rooms(roomResponses.isEmpty() ? List.of(RoomRs.builder()
                         .errorMessage("Rooms not found")

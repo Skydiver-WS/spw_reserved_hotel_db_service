@@ -1,5 +1,6 @@
 package ru.project.reserved.system.db.app.service.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long>, JpaSpecificationExecutor<Hotel> {
 
-    List<Hotel> findHotelsByCity(String cityName);
+    List<Hotel> findHotelsByCity(String cityName, Pageable pageable);
 
     @Query("SELECT h.id, h.countApart, SIZE(h.roomList) FROM Hotel h")
     List<Long[]> findAllWithRoomCount();

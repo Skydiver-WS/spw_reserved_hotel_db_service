@@ -28,8 +28,8 @@ public class HotelController {
 
     @PostMapping("/search")
     @Metric(type = MetricType.SEARCH_HOTEL, description = "Search hotel")
-    public ResponseEntity<HotelRs> findHotels(@RequestBody HotelRq hotelRq){
-        return ResponseEntity.ok(hotelService.getAllHotelsByParams(hotelRq));
+    public ResponseEntity<HotelRs> findHotels(@RequestBody HotelRq hotelRq, Pageable pageable){
+        return ResponseEntity.ok(hotelService.getAllHotelsByParams(hotelRq, pageable));
     }
 
     @PostMapping

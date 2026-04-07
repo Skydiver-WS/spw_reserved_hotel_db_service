@@ -6,7 +6,7 @@ import ru.project.reserved.system.db.app.service.dto.hotel.HotelRs;
 
 public interface HotelService {
     HotelRs getAllHotels(Pageable pageable);
-    HotelRs getAllHotelsByParams(HotelRq searchRequestRequest);
+    HotelRs getAllHotelsByParams(HotelRq searchRequestRequest, Pageable pageable);
     HotelRs createHotel(HotelRq hotelRq);
     HotelRs updateHotel(HotelRq hotelRq);
     HotelRs deleteHotel(HotelRq hotelRq);

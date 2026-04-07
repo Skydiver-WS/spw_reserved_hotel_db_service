@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.room;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 import ru.project.reserved.system.db.app.service.AbstractTest;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
@@ -85,7 +86,7 @@ public class RoomsTest extends AbstractTest {
 
     @Test
     public void searchRoomTest() {
-        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула", Pageable.ofSize(1)).getFirst();
         RoomRq request = RoomRq.builder()
                 .roomSearch(RoomRq.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -102,13 +103,13 @@ public class RoomsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertFalse(response.getRooms().isEmpty());
     }
 
     @Test
     public void searchNoRoomTest() {
-        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула", Pageable.ofSize(1)).getFirst();
         RoomRq request = RoomRq.builder()
                 .roomSearch(RoomRq.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -125,13 +126,13 @@ public class RoomsTest extends AbstractTest {
                                 .toEpochMilli()))
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertFalse(response.getRooms().getFirst().getErrorMessage().isEmpty());
     }
 
     @Test
     public void searchRoomByClassRoomTest(){
-        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула", Pageable.ofSize(1)).getFirst();
         RoomRq request = RoomRq.builder()
                 .roomSearch(RoomRq.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -149,13 +150,13 @@ public class RoomsTest extends AbstractTest {
                         .classRoomType(ClassRoomType.STANDARD)
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertEquals(3, response.getRooms().size());
     }
 
     @Test
     public void searchRoomByCoastTest(){
-        Hotel hotel = hotelRepository.findHotelsByCity("Тула").getFirst();
+        Hotel hotel = hotelRepository.findHotelsByCity("Тула", Pageable.ofSize(1)).getFirst();
         RoomRq request = RoomRq.builder()
                 .roomSearch(RoomRq.RoomSearchRequest.builder()
                         .hotelId(hotel.getId())
@@ -173,7 +174,7 @@ public class RoomsTest extends AbstractTest {
                         .coast(2000.0)
                         .build())
                 .build();
-        RoomRs response = roomService.findRoomsForParameters(request);
+        RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
         Assertions.assertEquals(3, response.getRooms().size());
     }
 

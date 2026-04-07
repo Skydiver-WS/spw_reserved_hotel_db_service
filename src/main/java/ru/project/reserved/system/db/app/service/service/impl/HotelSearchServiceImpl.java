@@ -3,6 +3,7 @@ package ru.project.reserved.system.db.app.service.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.project.reserved.system.db.app.service.dto.hotel.HotelRq;
@@ -29,8 +30,8 @@ public class HotelSearchServiceImpl implements HotelSearchService {
     private final BookingRepository bookingRepository;
 
     @Override
-    public List<HotelRs> searchHotels(@Validated HotelRq request) {
-        List<Hotel> hotels = hotelRepository.findHotelsByCity(request.getHotelSearch().getCity());
+    public List<HotelRs> searchHotels(@Validated HotelRq request, Pageable pageable) {
+        List<Hotel> hotels = hotelRepository.findHotelsByCity(request.getHotelSearch().getCity(), pageable);
         findAndSortByName(hotels, request);
         findAndSortByDate(hotels, request);
         findAndSortByDistance(hotels, request);
