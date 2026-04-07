@@ -57,14 +57,12 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelRs getAllHotelsByParams(HotelRq request, Pageable pageable) {
         log.info("Get hotels by params");
-//        return HotelRs.builder()
-//                .hotels(hotelSearchService.searchHotels(request))
-//                .build();
         Specification<Hotel> hotelSpecification = Specification.<Hotel>unrestricted()
                 .and(hotelSearchById(request.getId()))
                 .and(hotelSearchByName(request.getHotelSearch().getHotelName()))
                 .and(hotelSearchByCity(request.getHotelSearch().getCity()))
                 .and(hotelSearchByDistance(request.getHotelSearch().getDistance()))
+                .and(hotelSearchByRating(request.getHotelSearch().getRating()))
                 .and(hotelSearchByRoomType(request.getHotelSearch().getClassRoomType()))
                 .and(hotelSearchByRoomCoast(request.getHotelSearch().getCoastMin(),
                         request.getHotelSearch().getCoastMax()))

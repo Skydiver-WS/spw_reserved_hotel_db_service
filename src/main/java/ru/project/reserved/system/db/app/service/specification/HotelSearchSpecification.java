@@ -21,7 +21,7 @@ public class HotelSearchSpecification {
 
     public static Specification<Hotel> hotelSearchById(Long id) {
         return (root, query, criteriaBuilder) -> {
-            if (id == 0) {
+            if (id == null || id == 0) {
                 return criteriaBuilder.conjunction();
             }
             return criteriaBuilder.equal(root.get("id"), id);
@@ -48,10 +48,19 @@ public class HotelSearchSpecification {
 
     public static Specification<Hotel> hotelSearchByDistance(Double distance) {
         return (root, query, criteriaBuilder) -> {
-            if (distance.isNaN()) {
+            if (Objects.isNull(distance)) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("distance"), distance);
+            return criteriaBuilder.lessThanOrEqualTo(root.get("distance"), distance);
+        };
+    }
+
+    public static Specification<Hotel> hotelSearchByRating(Double rating) {
+        return (root, query, criteriaBuilder) -> {
+          if (Objects.isNull(rating)) {
+              return criteriaBuilder.conjunction();
+          }
+          return criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), rating);
         };
     }
 
@@ -74,7 +83,7 @@ public class HotelSearchSpecification {
             }
             assert query != null;
             query.distinct(true);
-            Join<Hotel, Room> rooms = root.join("coast");
+            Join<Hotel, Room> rooms = root.join("roomList");
             if (coastMin != null && coastMax != null) {
                 // Между минимальной и максимальной ценой
                 return criteriaBuilder.between(rooms.get("coast"), coastMin, coastMax);
@@ -110,4 +119,5 @@ public class HotelSearchSpecification {
             );
         };
     }
+
 }
