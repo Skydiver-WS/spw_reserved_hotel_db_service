@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.dto.hotel;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 import ru.project.reserved.system.db.app.service.dto.type.SortType;
 import ru.project.reserved.system.db.app.service.entity.Photo;
 
@@ -37,6 +38,7 @@ public class HotelRq {
         private Date startReserved;
         private Date endReserved;
         private SortType sortCoast;
+        private ClassRoomType classRoomType;
         private Long coastMin;
         private Long coastMax;
         private SortType sortRating;

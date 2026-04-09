@@ -57,7 +57,8 @@ public class RoomRq {
         @NotNull
         private Date endReserved;
         private SortType sortCoast;
-        private Double coast;
+        private Double coastMin;
+        private Double coastMax;
         private ClassRoomType classRoomType;
     }
 

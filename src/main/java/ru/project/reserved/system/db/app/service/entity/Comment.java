@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Data
+@FieldNameConstants(asEnum = true)
 public class Comment {
 
     @Id

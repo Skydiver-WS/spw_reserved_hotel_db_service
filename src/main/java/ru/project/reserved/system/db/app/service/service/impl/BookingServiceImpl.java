@@ -4,41 +4,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.project.reserved.system.db.app.service.dto.booking.BookingRs;
 import ru.project.reserved.system.db.app.service.dto.room.RoomRq;
-import ru.project.reserved.system.db.app.service.dto.room.RoomRs;
 import ru.project.reserved.system.db.app.service.entity.Booking;
 import ru.project.reserved.system.db.app.service.entity.Room;
 import ru.project.reserved.system.db.app.service.exception.BookingException;
 import ru.project.reserved.system.db.app.service.mapper.BookingMapper;
-import ru.project.reserved.system.db.app.service.mapper.RoomMapper;
 import ru.project.reserved.system.db.app.service.repository.BookingRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.BookingService;
-import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import static ru.project.reserved.system.db.app.service.specification.RoomSearchSpecification.*;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
-    private final RoomSearchService search;
-    private final RoomRepository roomRepository;
-    private final RoomMapper roomMapper;
+
     private final BookingRepository bookingRepository;
     private final ObjectMapper objectMapper;
     private final BookingMapper bookingMapper;
+    private final RoomRepository roomRepository;
 
     @Override
     @SneakyThrows
     public BookingRs createBookingRoom(RoomRq roomRq) {
-        List<Room> roomResponses = search.searchRoomByParameterForReserved(roomRq);
+        Specification<Room> roomSpecification = Specification.<Room>unrestricted()
+                .and(searchRoomById(roomRq.getId()))
+                .and(searchRoomByHotelId(roomRq.getRoomBooking().getHotelId()))
+                .and(searchRoomByDate(roomRq.getRoomBooking().getStartReserved(), roomRq.getRoomBooking().getEndReserved()))
+                .and(searchRoomByClassRoom(roomRq.getRoomBooking().getClassRoomType()))
+                .and(searchRoomByBookingId(roomRq.getRoomBooking().getBookingId()));
+        List<Room> roomResponses = roomRepository.findAll(roomSpecification);
         if (roomResponses.isEmpty()) {
             throw new BookingException("Rooms by request not found. \n" +
                     "Request: " + objectMapper.writeValueAsString(roomRq.getRoomBooking()));
@@ -81,6 +84,5 @@ public class BookingServiceImpl implements BookingService {
                 .description("Booking remove successfully")
                 .build();
     }
-
 
 }

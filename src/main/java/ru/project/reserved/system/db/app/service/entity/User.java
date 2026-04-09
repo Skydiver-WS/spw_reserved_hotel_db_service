@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 @Entity
 @AllArgsConstructor
@@ -10,6 +11,7 @@ import lombok.*;
 @Setter
 @Builder
 @Table(name = "users")
+@FieldNameConstants(asEnum = true)
 public class User {
 
     @Id

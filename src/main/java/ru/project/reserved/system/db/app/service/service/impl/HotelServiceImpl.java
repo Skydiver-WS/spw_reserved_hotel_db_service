@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,13 @@ import ru.project.reserved.system.db.app.service.entity.Hotel;
 import ru.project.reserved.system.db.app.service.entity.User;
 import ru.project.reserved.system.db.app.service.mapper.HotelMapper;
 import ru.project.reserved.system.db.app.service.repository.HotelRepository;
-import ru.project.reserved.system.db.app.service.service.HotelSearchService;
 import ru.project.reserved.system.db.app.service.service.HotelService;
 
 import java.io.IOException;
 import java.util.*;
+
+import static ru.project.reserved.system.db.app.service.specification.HotelSearchSpecification.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +34,6 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
-    private final HotelSearchService hotelSearchService;
 
     @Override
     @SneakyThrows
@@ -53,8 +55,20 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelRs getAllHotelsByParams(HotelRq request, Pageable pageable) {
         log.info("Get hotels by params");
+        Specification<Hotel> hotelSpecification = Specification.<Hotel>unrestricted()
+                .and(hotelSearchById(request.getId()))
+                .and(hotelSearchByName(request.getHotelSearch().getHotelName()))
+                .and(hotelSearchByCity(request.getHotelSearch().getCity()))
+                .and(hotelSearchByDistance(request.getHotelSearch().getDistance()))
+                .and(hotelSearchByRating(request.getHotelSearch().getRating()))
+                .and(hotelSearchByRoomType(request.getHotelSearch().getClassRoomType()))
+                .and(hotelSearchByRoomCoast(request.getHotelSearch().getCoastMin(),
+                        request.getHotelSearch().getCoastMax()))
+                .and(searchByHasBookingBetweenDates(request.getHotelSearch().getStartReserved(),
+                        request.getHotelSearch().getEndReserved()));
+        Page<Hotel> page = hotelRepository.findAll(hotelSpecification, pageable);
         return HotelRs.builder()
-                .hotels(hotelSearchService.searchHotels(request, pageable))
+                .hotels(hotelMapper.mappingHotelListToHotelResponseList(page.stream().toList()))
                 .build();
     }
 
