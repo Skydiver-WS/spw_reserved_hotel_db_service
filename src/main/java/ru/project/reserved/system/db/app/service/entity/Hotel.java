@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"name", "city", "address"})
 })
+@FieldNameConstants(asEnum = true)
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -3,9 +3,9 @@ package ru.project.reserved.system.db.app.service.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.NonUniqueResultException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -25,11 +25,12 @@ import ru.project.reserved.system.db.app.service.repository.HotelRepository;
 import ru.project.reserved.system.db.app.service.repository.RoomRepository;
 import ru.project.reserved.system.db.app.service.service.BookingService;
 import ru.project.reserved.system.db.app.service.service.MetricService;
-import ru.project.reserved.system.db.app.service.service.RoomSearchService;
 import ru.project.reserved.system.db.app.service.service.RoomService;
 
 import java.io.IOException;
 import java.util.*;
+
+import static ru.project.reserved.system.db.app.service.specification.RoomSearchSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,6 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
     private final RoomMapper roomMapper;
-    private final RoomSearchService searchService;
     private final BookingService bookingService;
     private final MetricService metric;
 
@@ -76,7 +76,13 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomRs findRoomsForParameters(RoomRq request, Pageable pageable) {
         log.info("Find rooms for parameters");
-        List<Room> roomResponses = searchService.searchRoomByParameter(request, pageable);
+        Specification<Room> roomSpecification = Specification.<Room>unrestricted()
+                .and(searchRoomByHotelId(request.getRoomSearch().getHotelId()))
+                .and(searchRoomByHotelName(request.getRoomSearch().getHotelName()))
+                .and(searchRoomByClassRoom(request.getRoomSearch().getClassRoomType()))
+                .and(searchRoomByCoast(request.getRoomSearch().getCoastMin(), request.getRoomSearch().getCoastMax()))
+                .and(searchRoomByDate(request.getRoomSearch().getStartReserved(), request.getRoomSearch().getEndReserved()));
+        List<Room> roomResponses = roomRepository.findAll(roomSpecification, pageable).stream().toList();
         return RoomRs.builder()
                 .rooms(roomResponses.isEmpty() ? List.of(RoomRs.builder()
                         .errorMessage("Rooms not found")
@@ -125,7 +131,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public BookingRs reservedRoom(RoomRq roomRq) {
         try {
-            BookingRs rs = null;
+            BookingRs rs;
             if (BookingOperationType.UPDATE.equals(roomRq.getRoomBooking().getOperationType())) {
                rs = bookingService.updateBookingRoom(roomRq);
                 metric.sendMetricEnd(MetricType.UPDATE_RESERVATION, rs, "Update reserved");

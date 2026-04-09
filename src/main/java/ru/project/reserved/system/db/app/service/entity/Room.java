@@ -2,6 +2,7 @@ package ru.project.reserved.system.db.app.service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import ru.project.reserved.system.db.app.service.dto.type.ClassRoomType;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 })
 @Data
 @Builder
+@FieldNameConstants(asEnum = true)
 public class Room {
 
     @Id

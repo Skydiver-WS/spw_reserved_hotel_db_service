@@ -151,7 +151,7 @@ public class RoomsTest extends AbstractTest {
                         .build())
                 .build();
         RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
-        Assertions.assertEquals(3, response.getRooms().size());
+        Assertions.assertEquals(1, response.getRooms().size());
     }
 
     @Test
@@ -171,11 +171,11 @@ public class RoomsTest extends AbstractTest {
                                 .atZone(ZoneId.systemDefault()) // Учитываем часовой пояс
                                 .toInstant()
                                 .toEpochMilli()))
-                        .coast(2000.0)
+                        .coastMax(200000.0)
                         .build())
                 .build();
         RoomRs response = roomService.findRoomsForParameters(request, Pageable.ofSize(1));
-        Assertions.assertEquals(3, response.getRooms().size());
+        Assertions.assertEquals(1, response.getRooms().size());
     }
 
 }

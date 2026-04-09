@@ -1,6 +1,9 @@
 package ru.project.reserved.system.db.app.service.specification;
 
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -24,7 +27,7 @@ public class HotelSearchSpecification {
             if (id == null || id == 0) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("id"), id);
+            return criteriaBuilder.equal(root.get(Hotel.Fields.id.name()), id);
         };
     }
 
@@ -33,7 +36,7 @@ public class HotelSearchSpecification {
             if (Strings.isBlank(name)) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.like(root.get("name"), name);
+            return criteriaBuilder.like(root.get(Hotel.Fields.name.name()), name);
         };
     }
 
@@ -42,7 +45,7 @@ public class HotelSearchSpecification {
             if (Strings.isBlank(city)) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("city"), city);
+            return criteriaBuilder.equal(root.get(Hotel.Fields.city.name()), city);
         };
     }
 
@@ -51,7 +54,7 @@ public class HotelSearchSpecification {
             if (Objects.isNull(distance)) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.lessThanOrEqualTo(root.get("distance"), distance);
+            return criteriaBuilder.lessThanOrEqualTo(root.get(Hotel.Fields.distance.name()), distance);
         };
     }
 
@@ -60,7 +63,7 @@ public class HotelSearchSpecification {
           if (Objects.isNull(rating)) {
               return criteriaBuilder.conjunction();
           }
-          return criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), rating);
+          return criteriaBuilder.greaterThanOrEqualTo(root.get(Hotel.Fields.rating.name()), rating);
         };
     }
 
@@ -71,8 +74,8 @@ public class HotelSearchSpecification {
             }
             assert query != null;
             query.distinct(true);
-            Join<Hotel, Room> rooms = root.join("roomList");
-            return criteriaBuilder.equal(rooms.get("classRoomType"), classRoomType);
+            Join<Hotel, Room> rooms = root.join(Hotel.Fields.roomList.name());
+            return criteriaBuilder.equal(rooms.get(Room.Fields.classRoomType.name()), classRoomType);
         };
     }
 
@@ -83,16 +86,16 @@ public class HotelSearchSpecification {
             }
             assert query != null;
             query.distinct(true);
-            Join<Hotel, Room> rooms = root.join("roomList");
+            Join<Hotel, Room> rooms = root.join(Hotel.Fields.roomList.name());
             if (coastMin != null && coastMax != null) {
                 // Между минимальной и максимальной ценой
-                return criteriaBuilder.between(rooms.get("coast"), coastMin, coastMax);
+                return criteriaBuilder.between(rooms.get(Room.Fields.coast.name()), coastMin, coastMax);
             } else if (coastMin != null) {
                 // Выше минимальной цены
-                return criteriaBuilder.greaterThanOrEqualTo(rooms.get("coast"), coastMin);
+                return criteriaBuilder.greaterThanOrEqualTo(rooms.get(Room.Fields.coast.name()), coastMin);
             } else {
                 // Ниже максимальной цены
-                return criteriaBuilder.lessThanOrEqualTo(rooms.get("coast"), coastMax);
+                return criteriaBuilder.lessThanOrEqualTo(rooms.get(Room.Fields.coast.name()), coastMax);
             }
         };
     }
@@ -101,22 +104,30 @@ public class HotelSearchSpecification {
      * Поиск отелей с бронированиями в указанные даты
      */
     public static Specification<Hotel> searchByHasBookingBetweenDates(Date startDate, Date endDate) {
-        return (root, query, criteriaBuilder) -> {
+        return (root, query, cb) -> {
             if (startDate == null || endDate == null) {
-                return criteriaBuilder.conjunction();
+                return cb.conjunction();
             }
 
             assert query != null;
             query.distinct(true);
-            Join<Hotel, Room> rooms = root.join("roomList");
-            Join<Room, Booking> bookings = rooms.join("bookings");
 
+            // подзапрос: ищем пересекающееся бронирование
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Booking> booking = subquery.from(Booking.class);
 
-            // Бронирование пересекается с указанным периодом
-            return criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(bookings.get("startDate"), endDate),
-                    criteriaBuilder.greaterThanOrEqualTo(bookings.get("endDate"), startDate)
-            );
+            Join<Booking, Room> room = booking.join(Booking.Fields.room.name());
+            Join<Room, Hotel> hotel = room.join(Room.Fields.hotel.name());
+
+            subquery.select(cb.literal(1L))
+                    .where(
+                            cb.equal(hotel.get(Hotel.Fields.id.name()), root.get(Hotel.Fields.id.name())),
+                            cb.lessThan(booking.get(Booking.Fields.startReserved.name()), endDate),
+                            cb.greaterThan(booking.get(Booking.Fields.endReserved.name()), startDate)
+                    );
+
+            // ❗ НЕТ пересечений → отель подходит
+            return cb.not(cb.exists(subquery));
         };
     }
 
