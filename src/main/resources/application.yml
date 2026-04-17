@@ -19,10 +19,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: ${DDL-AUTO-MODE}
   datasource:
-    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
+#    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
 #    url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
+    url: ${HOTEL_DB_URL}
     username: postgres
     password: postgres
     hikari:
@@ -36,7 +37,8 @@ spring:
     user: postgres
     password: postgres
 #    url: jdbc:postgresql://localhost:30032/hotel_db?currentSchema=hotel
-    url: jdbc:postgresql://host.docker.internal:30032/hotel_db?currentSchema=hotel
+#
+    url: ${HOTEL_DB_URL}
     default-schema: hotel
     liquibase-schema: hotel
     parameters:

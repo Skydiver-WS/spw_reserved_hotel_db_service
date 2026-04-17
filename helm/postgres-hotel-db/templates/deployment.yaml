@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # сколько новых Pod можно создать сверху
+      maxUnavailable: 1 # сколько можно удалить старых
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+{{/*      Рут права для создание директории*/}}
+      securityContext:
+        runAsNonRoot: true
+
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+
+          env:
+            # ✅ исправлены ключи Secret
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_USERNAME
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_PASSWORD
+
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_DB
+            - name: POSTGRES_MAX_CONNECTIONS
+              value: "200"
+            - name: SHARED_BUFFERS
+              value: "256MB"
+            - name: EFFECTIVE_CACHE_SIZE
+              value: "1Gi"
+            - name: MAX_PARALLEL_WORKERS
+              value: "4"
+            - name: IDLE_IN_TRANSACTION_SESSION_TIMEOUT
+              value: "60000"
+{{/*              Необходимо для создания директории для сохранения данных*/}}
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+
+          # ✅ добавлены probes (K8s будет понимать состояние БД)
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          # ✅ добавлено хранилище данных (иначе данные теряются)
+          volumeMounts:
+            - name: {{ .Chart.Name }}-storage
+              mountPath: /var/lib/postgresql/data
+
+      volumes:
+        # ✅ теперь используется PVC вместо emptyDir
+        - name: {{ .Chart.Name }}-storage
+          persistentVolumeClaim:
+            claimName: {{ .Chart.Name }}-pvc
+
