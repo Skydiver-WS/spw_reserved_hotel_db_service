@@ -16,8 +16,8 @@ image:
 
 service:
   type: ClusterIP
-  port: 5432
-  targetPort: 5433
+  port: 5433
+  targetPort: 5432
 
 secret:
   name: postgres-hotel-db-secret # ✅ переименовано для ясности
@@ -28,5 +28,13 @@ secret:
 persistence:
   enabled: true
   size: 5Gi
+
+resource:
+  limit:
+    cpu: 500m
+    memory: 500Mi
+  request:
+    cpu: 500m
+    memory: 256Mi
 
 

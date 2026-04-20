@@ -6,5 +6,5 @@ spec:
   selector:
     app: {{ .Chart.Name }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+    - port: {{ .Values.service.port }} #Стучится сюда приложение
+      targetPort: {{ .Values.service.targetPort }} #Порт самой БД

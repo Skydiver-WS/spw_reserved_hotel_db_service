@@ -64,15 +64,23 @@ spec:
           # ✅ добавлены probes (K8s будет понимать состояние БД)
           livenessProbe:
             tcpSocket:
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 30
             periodSeconds: 10
 
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 5
             periodSeconds: 10
+
+          resources:
+            requests:
+              cpu: {{ .Values.resource.request.cpu }}
+              memory: {{ .Values.resource.request.memory }}
+            limits:
+              cpu: {{ .Values.resource.limit.cpu }}
+              memory: {{ .Values.resource.limit.memory }}
 
           # ✅ добавлено хранилище данных (иначе данные теряются)
           volumeMounts:

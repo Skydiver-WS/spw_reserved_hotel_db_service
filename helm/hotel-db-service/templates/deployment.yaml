@@ -9,7 +9,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1 # сколько новых Pod можно создать сверху
-      maxUnavailable: 1 # сколько можно удалить старых
+      maxUnavailable: 0 # сколько можно удалить старых
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
@@ -36,3 +36,17 @@ spec:
               value: {{ .Values.db_properties.url }}
             - name: DDL-AUTO-MODE
               value: {{ .Values.db_properties.ddl_mode }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0"
+          # ✅ добавлены probes (K8s будет понимать состояние БД)
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
