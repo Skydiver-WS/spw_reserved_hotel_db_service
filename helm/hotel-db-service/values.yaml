@@ -8,7 +8,7 @@ image:
   repository: skydiverkhv/db_service
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: v2.0.2
+  tag: v2.0.3
 
 service:
   type: ClusterIP
@@ -32,7 +32,7 @@ resources:
     cpu: 500m
     memory: 500Mi
 db_properties:
-  url: jdbc:postgresql://postgres-hotel-db-service.postgres-db.svc.cluster.local:5433/hotel_db?currentSchema=hotel
+  url: jdbc:postgresql://postgres-hotel-db-service.database.svc.cluster.local:5433/hotel_db?currentSchema=hotel
   ddl_mode: update
 
 

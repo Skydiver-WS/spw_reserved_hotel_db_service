@@ -8,7 +8,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1 # сколько новых Pod можно создать сверху
-      maxUnavailable: 1 # сколько можно удалить старых
+      maxUnavailable: 0 # сколько можно удалить старых
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
